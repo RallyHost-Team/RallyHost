@@ -1,0 +1,41 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:RallyHost.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="RallyHost.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="RallyHost">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <Border>
+        <Grid ColumnDefinitions="2*, 8*">
+            <Border Background="LightGreen">
+                <Grid RowDefinitions="48, 32, 32, auto">
+                    <Border Background="AntiqueWhite">
+                        <TextBlock FontWeight="ExtraBold" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center">RallyHost</TextBlock>
+					</Border>
+                    <Border Grid.Row="1" Background="Aquamarine" BorderBrush="Black" BorderThickness="1">
+                        <RadioButton VerticalAlignment="Center" HorizontalAlignment="Center">Home</RadioButton>
+                    </Border>
+                    <Border Grid.Row="2" Background="Aquamarine" BorderBrush="Black" BorderThickness="1">
+                        <RadioButton VerticalAlignment="Center" HorizontalAlignment="Center">Settings</RadioButton>
+                    </Border>
+                    <Border Grid.Row="3">
+
+                    </Border>
+                </Grid>
+            </Border>
+            <Border Grid.Column="1">
+				<!-- Todo ContentView -->
+            </Border>
+        </Grid>
+    </Border>
+
+</Window>
