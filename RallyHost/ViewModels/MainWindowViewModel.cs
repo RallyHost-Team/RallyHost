@@ -7,16 +7,18 @@ namespace RallyHost.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly HomeViewModel _homeViewModel = new HomeViewModel();
-        private readonly SettingsViewModel _settingsViewModel = new SettingsViewModel();
+        private readonly HomeViewModel _homeViewModel;
+        private readonly SettingsViewModel _settingsViewModel;
 
         [ObservableProperty]
         private UserControl _currentView;
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(HomeViewModel homeViewModel, SettingsViewModel settingsViewModel)
         {
             // Set initial view
             CurrentView = new HomeView { DataContext = _homeViewModel };
+            _homeViewModel = homeViewModel;
+            _settingsViewModel = settingsViewModel;
         }
 
         [RelayCommand]

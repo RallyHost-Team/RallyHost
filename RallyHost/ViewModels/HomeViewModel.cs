@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace RallyHost.ViewModels
 {
-    internal partial class HomeViewModel : ViewModelBase
+    public partial class HomeViewModel : ViewModelBase
     {
         [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = true;
 

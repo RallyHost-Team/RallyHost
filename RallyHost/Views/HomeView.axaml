@@ -13,24 +13,25 @@
 	</Design.DataContext>
 	<Border>
 		<Grid RowDefinitions="2*, 8*">
-			<Border Grid.RowSpan="2" Margin="5" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.8" Background="CornflowerBlue" IsVisible="{Binding PopUpProfileEditWindowIsOpen}">
+			<Border Grid.RowSpan="2" Margin="5" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.85" Background="CornflowerBlue" IsVisible="{Binding PopUpProfileEditWindowIsOpen}">
 				<Grid RowDefinitions="1*, 40">
                     <StackPanel>
 						<Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-							<TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">存档名称</TextBlock>
+							<TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">档案名称</TextBlock>
                             <TextBox Grid.Column="1"></TextBox>
                         </Grid>
                         <Grid ColumnDefinitions="Auto, 1*, 40" Margin="0,0,0,5">
-                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">世界路径</TextBlock>
+                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">存档目录</TextBlock>
                             <TextBox Grid.Column="1"></TextBox>
 							<Button Grid.Column="2" Margin="5,0,0,0">...</Button>
                         </Grid>
                         <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">游戏端口</TextBlock>
+                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">同步链接</TextBlock>
                             <TextBox Grid.Column="1"></TextBox>
                         </Grid>
                     </StackPanel>
-                    <Button Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Command="{Binding TogglePopUpProfileEditWindowCommand}">Close</Button>
+					<Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpProfileEditWindowCommand}">确定</Button>
+                    <Button Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding TogglePopUpProfileEditWindowCommand}">取消</Button>
 				</Grid>
 			</Border>
 			<Border Grid.Row = "0" Margin="10">
