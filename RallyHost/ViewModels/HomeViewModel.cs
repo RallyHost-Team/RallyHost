@@ -16,6 +16,7 @@ namespace RallyHost.ViewModels
     {
         private readonly Config _config;
         private readonly IConfigWriter _configWriter;
+        private readonly IDialogService _dialogService;
         [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = false;
         [ObservableProperty] private ObservableCollection<Profile> _profiles;
         [ObservableProperty] private Profile _selectedProfile;
@@ -24,12 +25,23 @@ namespace RallyHost.ViewModels
         {
 
         }
-        public HomeViewModel(IOptions<Config> config, IConfigWriter configWriter)
+        public HomeViewModel(IOptions<Config> config, IConfigWriter configWriter, IDialogService dialogService)
         {
             _config = config.Value;
             _configWriter = configWriter;
+            _dialogService = dialogService;
             _profiles = new ObservableCollection<Profile>(_config.Profiles);
             SelectedProfile = Profiles.FirstOrDefault();
+        }
+
+        [RelayCommand]
+        public async Task SelectDirectory()
+        {
+            var path = await _dialogService.SelectFolderAsync();
+            if (path != null)
+            {
+                SelectedProfile.LevelDirectory = path;
+            }
         }
 
         [RelayCommand]

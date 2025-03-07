@@ -42,6 +42,8 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IConfiguration>(configuration);
         collection.AddSingleton<IConfigWriter, JsonConfigWriter>();
 
+        collection.AddTransient<IDialogService, DialogService>();
+
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<HomeViewModel>();
         collection.AddTransient<SettingsViewModel>();
