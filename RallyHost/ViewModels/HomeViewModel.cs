@@ -47,12 +47,20 @@ namespace RallyHost.ViewModels
         [RelayCommand]
         public async Task TogglePopUpProfileEditWindow_Done()
         {
-            if (SelectedProfile.Name == "")
+            if (SelectedProfile != null)
             {
-                Profiles.Remove(SelectedProfile);
+                if (SelectedProfile.Name == "")
+                {
+                    Profiles.Remove(SelectedProfile);
+                }
+                PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+                await _configWriter.SaveConfigAsync(nameof(Config), _config);
             }
-            PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
-            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+            else
+            {
+                await _dialogService.ShowMessageAsync("Error", "请先选择一个配置文件!");
+                PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+            }
         }
         [RelayCommand]
         public void TogglePopUpProfileEditWindow()

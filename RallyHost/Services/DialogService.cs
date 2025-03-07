@@ -16,5 +16,18 @@ namespace RallyHost.Services
             var dialog = new OpenFolderDialog();
             return await dialog.ShowAsync(MainWindow.Instance);
         }
+
+        public async Task ShowMessageAsync(string title, string message)
+        {
+            var dialog = new Window
+            {
+                Title = title,
+                Content = new TextBlock { Text = message },
+                Width = 300,
+                Height = 100, 
+                FontSize = 20
+            };
+            await dialog.ShowDialog(MainWindow.Instance);
+        }
     }
 }

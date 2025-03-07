@@ -9,5 +9,6 @@ namespace RallyHost.Services
     public interface IDialogService
     {
         Task<string?> SelectFolderAsync();
+        Task ShowMessageAsync(string title, string message);
     }
 }
