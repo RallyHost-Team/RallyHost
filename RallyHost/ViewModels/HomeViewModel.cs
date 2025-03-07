@@ -14,10 +14,12 @@ namespace RallyHost.ViewModels
     {
         private readonly Config _config;
         [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = true;
-
+        [ObservableProperty] private List<Profile> _profiles;
+        [ObservableProperty] private Profile _selectedProfile;
         public HomeViewModel(IOptions<Config> config)
         {
             _config = config.Value;
+            _profiles = _config.Profiles;
         }
 
         [RelayCommand]
