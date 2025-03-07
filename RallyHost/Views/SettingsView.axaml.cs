@@ -15,9 +15,4 @@ public partial class SettingsView : UserControl
     {
         InitializeComponent();
     }
-
-    private void Logining(object? sender, RoutedEventArgs e)
-    {
-        LoginCheck.Text = "Logining...";
-    }
 }
