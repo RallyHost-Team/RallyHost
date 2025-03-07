@@ -29,6 +29,7 @@ namespace RallyHost.ViewModels
             _config = config.Value;
             _configWriter = configWriter;
             _profiles = new ObservableCollection<Profile>(_config.Profiles);
+            SelectedProfile = Profiles.FirstOrDefault();
         }
 
         [RelayCommand]
