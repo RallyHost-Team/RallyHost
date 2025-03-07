@@ -19,11 +19,11 @@ namespace RallyHost
 
         public override void OnFrameworkInitializationCompleted()
         {
-            // ×¢²áÓ¦ÓÃ³ÌĞòÔËĞĞËùĞèµÄËùÓĞ·şÎñ
+            // æ³¨å†Œåº”ç”¨ç¨‹åºè¿è¡Œæ‰€éœ€çš„æ‰€æœ‰æœåŠ¡
             var collection = new ServiceCollection();
             collection.AddCommonServices();
 
-            // ´Ó collection Ìá¹©µÄ IServiceCollection ÖĞ´´½¨°üº¬·şÎñµÄ ServiceProvider
+            // ä» collection æä¾›çš„ IServiceCollection ä¸­åˆ›å»ºåŒ…å«æœåŠ¡çš„ ServiceProvider
             var services = collection.BuildServiceProvider();
 
             var vm = services.GetRequiredService<MainWindowViewModel>();

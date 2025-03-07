@@ -1,8 +1,10 @@
-﻿namespace RallyHost.Models;
+﻿using System.IO;
+
+namespace RallyHost.Models;
 
 public class Profile
 {
-    public string Name { get; set; }
-    public string LevelDirectory { get; set; }
-    public string GamePort { get; set; }
+    public string? Name { get; set; }
+    public DirectoryInfo? LevelDirectory { get; set; }
+    public string? SyncLink { get; set; }
 }
