@@ -1,10 +1,12 @@
 ﻿using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace RallyHost.Models;
 
-public class Profile
+[ObservableObject]
+public partial class Profile
 {
-    public string? Name { get; set; }
+    [ObservableProperty] private string? _name;
     public DirectoryInfo? LevelDirectory { get; set; }
     public string? SyncLink { get; set; }
 }

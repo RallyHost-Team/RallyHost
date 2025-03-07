@@ -9,16 +9,16 @@ namespace RallyHost.ViewModels
     {
         private readonly HomeViewModel _homeViewModel;
         private readonly SettingsViewModel _settingsViewModel;
+        private readonly WelcomeViewModel _welcomeViewModel;
 
-        [ObservableProperty]
-        private UserControl _currentView;
+        [ObservableProperty] private UserControl _currentView;
 
-        public MainWindowViewModel(HomeViewModel homeViewModel, SettingsViewModel settingsViewModel)
+        public MainWindowViewModel(HomeViewModel homeViewModel, SettingsViewModel settingsViewModel, WelcomeViewModel welcomeViewModel)
         {
-            // Set initial view
-            CurrentView = new HomeView { DataContext = _homeViewModel };
             _homeViewModel = homeViewModel;
             _settingsViewModel = settingsViewModel;
+            _welcomeViewModel = welcomeViewModel;
+            CurrentView = new WelcomeView { DataContext = _welcomeViewModel };
         }
 
         [RelayCommand]
@@ -28,7 +28,7 @@ namespace RallyHost.ViewModels
             {
                 "Home" => new HomeView { DataContext = _homeViewModel },
                 "Settings" => new SettingsView { DataContext = _settingsViewModel },
-                _ => new HomeView { DataContext = _homeViewModel }
+                _ => new WelcomeView { DataContext = _welcomeViewModel }
             };
         }
     }

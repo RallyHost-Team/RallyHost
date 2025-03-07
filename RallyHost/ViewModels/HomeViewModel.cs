@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,25 +8,66 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
 using RallyHost.Models;
+using RallyHost.Services;
 
 namespace RallyHost.ViewModels
 {
     public partial class HomeViewModel : ViewModelBase
     {
         private readonly Config _config;
-        [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = true;
-        [ObservableProperty] private List<Profile> _profiles;
+        private readonly IConfigWriter _configWriter;
+        [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = false;
+        [ObservableProperty] private ObservableCollection<Profile> _profiles;
         [ObservableProperty] private Profile _selectedProfile;
-        public HomeViewModel(IOptions<Config> config)
+
+        public HomeViewModel()
+        {
+
+        }
+        public HomeViewModel(IOptions<Config> config, IConfigWriter configWriter)
         {
             _config = config.Value;
-            _profiles = _config.Profiles;
+            _configWriter = configWriter;
+            _profiles = new ObservableCollection<Profile>(_config.Profiles);
         }
 
+        [RelayCommand]
+        public async Task TogglePopUpProfileEditWindow_Done()
+        {
+            if (SelectedProfile.Name == "")
+            {
+                Profiles.Remove(SelectedProfile);
+            }
+            PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+        }
         [RelayCommand]
         public void TogglePopUpProfileEditWindow()
         {
             PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
         }
+        [RelayCommand]
+        public async Task TogglePopUpProfileEditWindow_Add()
+        {
+            var profile = new Profile()
+            {
+                Name = "",
+                LevelDirectory = null,
+                SyncLink = ""
+            };
+            Profiles.Add(profile);
+            SelectedProfile = profile;
+            PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+        }
+
+        [RelayCommand]
+        public async Task RemoveSelectedProfile()
+        {
+            Profiles.Remove(SelectedProfile);
+            SelectedProfile = Profiles.FirstOrDefault();
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+        }
+
     }
 }

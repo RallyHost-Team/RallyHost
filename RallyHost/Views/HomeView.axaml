@@ -13,33 +13,44 @@
 	</Design.DataContext>
 	<Border>
 		<Grid RowDefinitions="2*, 8*">
-			<Border Grid.RowSpan="2" Margin="5" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.85" Background="CornflowerBlue" IsVisible="{Binding PopUpProfileEditWindowIsOpen}">
+			<Border Grid.RowSpan="2" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpProfileEditWindowIsOpen}">
 				<Grid RowDefinitions="1*, 40">
                     <StackPanel>
 					<!-- Todo 把这几个绑定到 SelectedProfile 上，其中对于路径那个需要转换器 -->
 						<Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-							<TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">档案名称</TextBlock>
-                            <TextBox Grid.Column="1"></TextBox>
+							<TextBlock Margin="2,0,5,0"
+                                       FontSize="16"
+                                       Grid.Column="0" 
+                                       VerticalAlignment="Center" 
+                                       HorizontalAlignment="Center">档案名称</TextBlock>
+                            <TextBox Grid.Column="1" Text="{Binding SelectedProfile.Name}"></TextBox>
                         </Grid>
                         <Grid ColumnDefinitions="Auto, 1*, 40" Margin="0,0,0,5">
-                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">存档目录</TextBlock>
+                            <TextBlock Margin="2,0,5,0"
+                                       FontSize="16"
+                                       Grid.Column="0" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">存档目录</TextBlock>
                             <TextBox Grid.Column="1"></TextBox>
 							<Button Grid.Column="2" Margin="5,0,0,0">...</Button>
                         </Grid>
                         <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                            <TextBlock Margin="2,0,5,0" FontSize="16" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">同步链接</TextBlock>
-                            <TextBox Grid.Column="1"></TextBox>
+                            <TextBlock Margin="2,0,5,0"
+                                       FontSize="16"
+                                       Grid.Column="0" 
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center">同步链接</TextBlock>
+                            <TextBox Grid.Column="1" Text="{Binding SelectedProfile.SyncLink}"></TextBox>
                         </Grid>
                     </StackPanel>
-					<Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpProfileEditWindowCommand}">确定</Button>
-                    <Button Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Command="{Binding TogglePopUpProfileEditWindowCommand}">取消</Button>
+					<Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpProfileEditWindow_DoneCommand}">确定</Button>
 				</Grid>
 			</Border>
 			<Border Grid.Row = "0" Margin="10">
-				<Grid ColumnDefinitions="auto, auto, auto, auto">
-					<ComboBox SelectedIndex="0" 
-							x:Name="ProfileComboBox" 
-							ItemsSource = "{Binding Profiles}"
+				<Grid ColumnDefinitions="auto, auto, auto, auto, auto">
+					<ComboBox
+							x:Name="ProfileComboBox"
+							ItemsSource = "{Binding Profiles, Mode=TwoWay}"
 							SelectedItem = "{Binding SelectedProfile, Mode=TwoWay}">
 						<ComboBox.ItemTemplate>
 							<DataTemplate>
@@ -48,7 +59,8 @@
 						</ComboBox.ItemTemplate>
 					</ComboBox>
 					<Button Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Command="{Binding TogglePopUpProfileEditWindowCommand}">...</Button>
-					<Button Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left">+</Button>
+					<Button Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Command="{Binding TogglePopUpProfileEditWindow_AddCommand}">+</Button>
+                    <Button Grid.Column="3" VerticalAlignment="Top" HorizontalAlignment="Left" Command="{Binding RemoveSelectedProfileCommand}">-</Button>
 				</Grid>
 			</Border>
 			<Border Grid.Row="1">
