@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using RallyHost.Models;
 using RallyHost.ViewModels;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using Newtonsoft.Json;
 using RallyHost.Services;
@@ -21,6 +22,7 @@ public static class ServiceCollectionExtensions
             File.WriteAllText(configPath, """
                                           {
                                             "Config": {
+                                              "OpenFrpToken": "",
                                               "Profiles": [
                                                 {
                                                     "Name": "Default",
@@ -42,7 +44,9 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IConfiguration>(configuration);
         collection.AddSingleton<IConfigWriter, JsonConfigWriter>();
 
+        collection.AddTransient<HttpClient>();
         collection.AddTransient<IDialogService, DialogService>();
+        collection.AddSingleton<IOpenFrpService, OpenFrpService>();
 
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<HomeViewModel>();

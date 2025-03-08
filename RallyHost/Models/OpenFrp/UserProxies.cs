@@ -70,7 +70,7 @@ namespace RallyHost.Models.OpenFrp
         public int? RemotePort { get; set; }
     }
 
-    public class ProxyListData
+    public class UserProxies
     {
         [JsonProperty("total")]
         public int? Total { get; set; }
@@ -79,10 +79,10 @@ namespace RallyHost.Models.OpenFrp
         public List<ProxyInfo>? List { get; set; }
     }
 
-    public class UserProxies
+    public class UserProxiesResponse
     {
         [JsonProperty("data")]
-        public ProxyListData? Data { get; set; }
+        public UserProxies? Data { get; set; }
 
         [JsonProperty("flag")]
         public bool? Flag { get; set; }
