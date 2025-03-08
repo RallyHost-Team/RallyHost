@@ -12,31 +12,44 @@
         <vm:SettingsViewModel/>
     </Design.DataContext>
     <StackPanel>
+        
         <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name = "FrpExpander" Margin="5">
             <Expander.Header>
                 Frp
             </Expander.Header>
-            <Grid RowDefinitions="1*, Auto" ColumnDefinitions="1*, Auto" Margin="0">
-                <Button Grid.Row="0" Grid.Column="0" VerticalAlignment="Stretch" Command="{Binding ChangeLoginStatusCommand}">
-                    登录OpenFrp
-                </Button>
-                <TextBlock Name="LoginCheck" Margin="130 ,6, 1, 1" FontSize="18" FontWeight="Bold" Text="{Binding LoginStatus}"></TextBlock>
-                <TextBox Grid.Column="0"  Watermark="请输入访问密钥" Margin="230, 1, 1 ,1" PasswordChar = "*"></TextBox>
+            
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0, 0, 0, 0">
+                <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp"></TextBlock>
+                <Button Grid.Row="0" Grid.Column="0" Margin="100, 1, 1, 1" Name="OpenFrpToken">Token</Button>
+                <Button Grid.Row="0" Grid.Column="0" Margin="200, 1, 1, 1" Name="OpenFrpRefresh">Refresh</Button>
+                <Button Grid.Row="0" Grid.Column="0" Margin="310, 1, 1, 1" Name="OpenFrpPing">Ping</Button>
+                <ListBox Grid.Row="1" Grid.Column="0" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test</ListBox>
+                
+                <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp"></TextBlock>
+                <Button Grid.Row="2" Grid.Column="0" Margin="113, 1, 1, 1" Name="CustomFrpAdd">Add</Button>
+                <Button Grid.Row="2" Grid.Column="0" Margin="200, 1, 1, 1" Name="CustomFrpEdit">Edit</Button>
+                <Button Grid.Row="2" Grid.Column="0" Margin="287, 1, 1, 1" Name="CustomFrpDelete">Delete</Button>
+                <Button Grid.Row="2" Grid.Column="0" Margin="390, 1, 1, 1" Name="CustomFrpPing">Ping</Button>
+                <ListBox Grid.Row="3" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test2</ListBox>
             </Grid>
+            
         </Expander>
+        
         <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name = "SyncExpander" BorderThickness="0" Margin="5">
             <Expander.Header>
                 Sync
             </Expander.Header>
-            <Grid RowDefinitions="1*, Auto" ColumnDefinitions="1*, Auto" Margin="0, 0, 0, 0">
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
             </Grid>
         </Expander>
+        
         <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name = "Other" BorderThickness="0" Margin="5">
             <Expander.Header>
 				Other
             </Expander.Header>
-            <Grid RowDefinitions="1*, Auto" ColumnDefinitions="1*, Auto" Margin="0, 0, 0, 0">
+            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
             </Grid>
         </Expander>
+        
     </StackPanel>
 </UserControl>
