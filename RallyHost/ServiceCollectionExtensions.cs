@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
                                           {
                                             "Config": {
                                               "OpenFrpToken": "",
+                                              "FrpcLocation": "",
                                               "Profiles": [
                                                 {
                                                     "Name": "Default",
