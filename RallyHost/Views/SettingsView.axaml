@@ -21,17 +21,17 @@
                     
                     <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Token" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" ></Button>
-                        <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
-                        <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
+                        <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Token" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpTokenInputCommand}"></Button>
+                        <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpRefreshCommand}"></Button>
+                        <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpPingCommand}"></Button>
                         <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test1</ListBox>
                         
                         <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp" VerticalAlignment="Center"></TextBlock>
-                        <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
-                        <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
-                        <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpDelete" Content="Delete" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
-                        <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center"></Button>
-                        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 5, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test2</ListBox>
+                        <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpAddCommand}"></Button>
+                        <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpEditCommand}"></Button>
+                        <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpDelete" Content="Delete" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpDeleteCommand}"></Button>
+                        <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpPingCommand}"></Button>
+                        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test2</ListBox>
                     </Grid>
                     
                 </Expander>

@@ -62,11 +62,13 @@ namespace RallyHost.ViewModels
                 PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
             }
         }
+        
         [RelayCommand]
         public void TogglePopUpProfileEditWindow()
         {
-            PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+                PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
         }
+        
         [RelayCommand]
         public async Task TogglePopUpProfileEditWindow_Add()
         {
