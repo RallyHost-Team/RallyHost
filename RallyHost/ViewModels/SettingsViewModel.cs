@@ -7,16 +7,16 @@ namespace RallyHost.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase
 {
-    //[ObservableProperty] private string _loginStatus = "False";
+    private readonly PingService _pingService;
     [ObservableProperty] private string _openFrpToken = "";
     [ObservableProperty] private string _openFrpPingStatus = "";
     [ObservableProperty] private string _openFrpHost = "";
     [ObservableProperty] private string _customFrpPingStatus = "";
     [ObservableProperty] private string _customFrpHost = "";
 
-    public SettingsViewModel()
+    public SettingsViewModel(PingService pingService)
     {
-
+        _pingService = pingService;
     }
     
 /*
@@ -32,7 +32,7 @@ public partial class SettingsViewModel : ViewModelBase
     public async Task OpenFrpPing()
     {
         string host = OpenFrpHost;
-        var latency = await PingService.Ping(host);
+        var latency = await _pingService.Ping(host);
         if (latency.HasValue)
         {
             if (latency.Value != -1)
@@ -50,7 +50,7 @@ public partial class SettingsViewModel : ViewModelBase
     public async Task CustomFrpPing()
     {
         string host = CustomFrpHost;
-        var latency = await PingService.Ping(host);
+        var latency = await _pingService.Ping(host);
         if (latency.HasValue)
         {
             if (latency.Value != -1)

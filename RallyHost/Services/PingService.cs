@@ -6,20 +6,23 @@ namespace RallyHost.Services
 {
     public class PingService
     {
-        public static async Task<long?> Ping(string host)
+        private readonly Ping _ping;
+
+        public PingService(Ping ping)
+        {
+            _ping = ping;
+        }
+
+        public async Task<long?> Ping(string host)
         {
             try
             {
-                using (Ping ping = new Ping())
+                PingReply reply = await _ping.SendPingAsync(host);
+                if (reply.Status == IPStatus.Success)
                 {
-                    PingReply reply = await ping.SendPingAsync(host);
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        return reply.RoundtripTime;
-                    }
-
-                    return -1;
+                    return reply.RoundtripTime;
                 }
+                return -1;
             }
             catch (Exception)
             {

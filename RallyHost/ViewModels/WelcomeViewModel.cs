@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RallyHost.Helpers;
 using RallyHost.Models;
 using RallyHost.Services;
 
@@ -11,7 +12,6 @@ namespace RallyHost.ViewModels;
 public partial class WelcomeViewModel : ViewModelBase
 {
     private readonly IOpenFrpService _openFrpService;
-    private readonly IDialogService _dialogService;
     private readonly Config _config;
     private readonly IConfigWriter _configWriter;
 
@@ -21,10 +21,9 @@ public partial class WelcomeViewModel : ViewModelBase
     {
 
     }
-    public WelcomeViewModel(IOpenFrpService openFrpService, IDialogService dialogService, IOptions<Config> config, IConfigWriter configWriter)
+    public WelcomeViewModel(IOpenFrpService openFrpService, IOptions<Config> config, IConfigWriter configWriter)
     {
         _openFrpService = openFrpService;
-        _dialogService = dialogService;
         _config = config.Value;
         _configWriter = configWriter;
         _openFrpToken = _config.OpenFrpToken;
@@ -35,7 +34,7 @@ public partial class WelcomeViewModel : ViewModelBase
     {
         _config.OpenFrpToken = _openFrpToken;
         await _configWriter.SaveConfigAsync(nameof(Config), _config);
-        await _dialogService.ShowMessageAsync(nameof(OpenFrpService.GetUserInfoAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserInfoAsync(), Formatting.Indented));
-        await _dialogService.ShowMessageAsync(nameof(OpenFrpService.GetUserProxiesAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserProxiesAsync(), Formatting.Indented));
+        await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserInfoAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserInfoAsync(), Formatting.Indented));
+        await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserProxiesAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserProxiesAsync(), Formatting.Indented));
     }
 }

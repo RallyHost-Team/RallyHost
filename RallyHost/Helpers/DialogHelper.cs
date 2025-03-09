@@ -7,17 +7,17 @@ using Avalonia;
 using Avalonia.Controls;
 using RallyHost.Views;
 
-namespace RallyHost.Services
+namespace RallyHost.Helpers
 {
-    public class DialogService : IDialogService
+    public class DialogHelper
     {
-        public async Task<string?> SelectFolderAsync()
+        public static async Task<string?> SelectFolderAsync()
         {
             var dialog = new OpenFolderDialog();
             return await dialog.ShowAsync(MainWindow.Instance);
         }
 
-        public async Task ShowMessageAsync(string title, string message)
+        public static async Task ShowMessageAsync(string title, string message)
         {
             var dialog = new Window
             {

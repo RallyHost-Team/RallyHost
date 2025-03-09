@@ -8,6 +8,7 @@ using System.Reflection;
 using Newtonsoft.Json;
 using RallyHost.Services;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Net.NetworkInformation;
 
 namespace RallyHost;
 
@@ -46,8 +47,10 @@ public static class ServiceCollectionExtensions
         collection.AddSingleton<IConfigWriter, JsonConfigWriter>();
 
         collection.AddTransient<HttpClient>();
-        collection.AddTransient<IDialogService, DialogService>();
         collection.AddSingleton<IOpenFrpService, OpenFrpService>();
+        collection.AddSingleton<IFrpcService, FrpcService>();
+        collection.AddTransient<Ping>();
+        collection.AddSingleton<PingService>();
 
         collection.AddTransient<MainWindowViewModel>();
         collection.AddTransient<HomeViewModel>();
