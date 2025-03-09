@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
         collection.AddOptions();
         collection.Configure<Config>(configuration.GetSection(nameof(Config))); 
         collection.AddSingleton<IConfiguration>(configuration);
-        collection.AddSingleton<IConfigWriter, JsonConfigWriter>();
+        collection.AddSingleton<IConfigWriter, AppConfigWriter>();
 
         collection.AddTransient<HttpClient>();
         collection.AddSingleton<IOpenFrpService, OpenFrpService>();

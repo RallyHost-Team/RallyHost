@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace RallyHost.Services;
 
-public class JsonConfigWriter : IConfigWriter
+public class AppConfigWriter : IConfigWriter
 {
     private readonly IConfigurationRoot _configRoot;
     private readonly string _configPath;
 
-    public JsonConfigWriter(IConfiguration config)
+    public AppConfigWriter(IConfiguration config)
     {
         _configRoot = (IConfigurationRoot)config;
         _configPath = Path.Combine(
