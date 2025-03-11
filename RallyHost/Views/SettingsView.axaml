@@ -13,45 +13,53 @@
     </Design.DataContext>
     
     <ScrollViewer>
-            <StackPanel>
-                <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="FrpExpander" Margin="5">
-                    <Expander.Header>
+            <Border>
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Border Grid.RowSpan="1" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding OpenFrpTokenInputWindowIsOpen}" IsEnabled="{Binding OpenFrpTokenInputWindowIsOpen}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid RowDefinitions="Auto">
+                            <StackPanel>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="OpenFrp Token:"/>
+                                <TextBox VerticalAlignment="Center" HorizontalAlignment="Center" Watermark="Enter your token" Width="500" Text="{Binding OpenFrpToken}"/>
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Done" Command="{Binding OpenFrp_TokenInputDoneCommand}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    
+                    <Expander Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="FrpExpander" BorderThickness="0" Margin="5">
+                        <Expander.Header>
                         Frp
-                    </Expander.Header>
-                    
-                    <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
-                        <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Token" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpTokenInputCommand}"></Button>
-                        <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpRefreshCommand}"></Button>
-                        <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrpPingCommand}"></Button>
-                        <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test1</ListBox>
-                        
-                        <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp" VerticalAlignment="Center"></TextBlock>
-                        <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpAddCommand}"></Button>
-                        <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpEditCommand}"></Button>
-                        <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpDelete" Content="Delete" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpDeleteCommand}"></Button>
-                        <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrpPingCommand}"></Button>
-                        <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test2</ListBox>
-                    </Grid>
-                    
-                </Expander>
-                
-                <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
-                    <Expander.Header>
-                        Sync
-                    </Expander.Header>
-                    <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
-                    </Grid>
-                </Expander>
-                
-                <Expander VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="Other" BorderThickness="0" Margin="5">
-                    <Expander.Header>
-                        Other
-                    </Expander.Header>
-                    <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
-                    </Grid>
-                </Expander>
-            </StackPanel>
+                        </Expander.Header>
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
+                            <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Token" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpOpenFrpWindow_TokenInputCommand}"></Button>
+                            <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_RefreshCommand}"></Button>
+                            <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_ServerPingCommand}"></Button>
+                            <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test1</ListBox>
+                            
+                            <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp" VerticalAlignment="Center"></TextBlock>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpWindow_AddCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpWindow_EditCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpDelete" Content="Remove" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerRemoveCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerPingCommand}"></Button>
+                            <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle">Test2</ListBox>
+                        </Grid>
+                    </Expander>
+                    <Expander Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
+                        <Expander.Header>
+                            Sync
+                        </Expander.Header>
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
+                        </Grid>
+                    </Expander>
+                    <Expander Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="Other" BorderThickness="0" Margin="5">
+                        <Expander.Header>
+                            Other
+                        </Expander.Header>
+                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
+                        </Grid>
+                    </Expander>
+                </Grid>
+            </Border>
     </ScrollViewer>
     
 </UserControl>
