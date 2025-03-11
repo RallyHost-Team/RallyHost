@@ -24,7 +24,11 @@ public partial class SettingsViewModel : ViewModelBase
     //[ObservableProperty] private bool _openFrpTokenInputIsDone = false;
     
     //IOpenFrpService openFrpService, IOptions<Config> config, IConfigWriter configWriter
-    
+
+    public SettingsViewModel()
+    {
+        
+    }
     public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
     {
         _pingService = pingService;
