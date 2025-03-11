@@ -56,6 +56,11 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     public async Task OpenFrp_Refresh()
     {
+        if (string.IsNullOrWhiteSpace(_config.OpenFrpToken))
+        {
+            DialogHelper.ShowMessageAsync("Error", "Please input OpenFrp Token first!");
+            return;
+        }
         await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserInfoAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserInfoAsync(), Formatting.Indented));
         await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserProxiesAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserProxiesAsync(), Formatting.Indented));
     }
