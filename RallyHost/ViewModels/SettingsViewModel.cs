@@ -1,4 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
@@ -15,20 +20,13 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IOpenFrpService _openFrpService;
     private readonly Config _config;
     private readonly IConfigWriter _configWriter;
+    public ObservableCollection<string> OpenFrpServerHost { get; } = new ObservableCollection<string> {}; 
+    public ObservableCollection<string> CustomFrpServerHost { get; } = new ObservableCollection<string> {};
     [ObservableProperty] private string? _openFrpToken = "";
     [ObservableProperty] private string _openFrpPingStatus = "";
-    [ObservableProperty] private string _openFrpServerHost = "";
     [ObservableProperty] private string _customFrpPingStatus = ""; 
-    [ObservableProperty] private string _customFrpServerHost = "";
     [ObservableProperty] private bool _openFrpTokenInputWindowIsOpen = false;
-    //[ObservableProperty] private bool _openFrpTokenInputIsDone = false;
     
-    //IOpenFrpService openFrpService, IOptions<Config> config, IConfigWriter configWriter
-
-    public SettingsViewModel()
-    {
-        
-    }
     public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
     {
         _pingService = pingService;
@@ -52,34 +50,83 @@ public partial class SettingsViewModel : ViewModelBase
     {
         OpenFrpTokenInputWindowIsOpen = !OpenFrpTokenInputWindowIsOpen;
     }
-
+    
     [RelayCommand]
     public async Task OpenFrp_Refresh()
     {
         if (string.IsNullOrWhiteSpace(_config.OpenFrpToken))
         {
-            DialogHelper.ShowMessageAsync("Error", "Please input OpenFrp Token first!");
+            await DialogHelper.ShowMessageAsync("Error", "Please input OpenFrp Token first!");
             return;
         }
-        await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserInfoAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserInfoAsync(), Formatting.Indented));
-        await DialogHelper.ShowMessageAsync(nameof(OpenFrpService.GetUserProxiesAsync), JsonConvert.SerializeObject(await _openFrpService.GetUserProxiesAsync(), Formatting.Indented));
+
+        try
+        {
+            var response = await _openFrpService.GetUserProxiesAsync();
+            if (response?.List != null)
+            {
+                OpenFrpServerHost.Clear();
+                var friendlyNodes = response.List
+                    .Select(p => p.FriendlyNode)
+                    .Where(node => !string.IsNullOrEmpty(node))
+                    .Distinct();
+
+                foreach (var node in friendlyNodes)
+                {
+                    OpenFrpServerHost.Add(node!);
+                }
+                
+                await OpenFrp_ServerPing();
+            }
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch proxy info: {ex.Message}");
+        }
     }
-    
+
     [RelayCommand]
     public async Task OpenFrp_ServerPing()
     {
-        string host = OpenFrpServerHost;
-        var latency = await _pingService.Ping(host);
-        if (latency.HasValue)
+        try
         {
-            if (latency.Value != -1)
+            var userProxies = await _openFrpService.GetUserProxiesAsync();
+            if (userProxies?.List == null)
             {
-                OpenFrpPingStatus = $"{latency.Value}ms";
+                OpenFrpPingStatus = "No proxies found";
+                return;
             }
-            else
+            
+            for (int i = 0; i < OpenFrpServerHost.Count; i++)
             {
-                OpenFrpPingStatus = "超时";
+                var host = OpenFrpServerHost[i];
+                if (host.Contains(']'))
+                {
+                    OpenFrpServerHost[i] = host.Substring(host.IndexOf(']') + 1).Trim();
+                }
             }
+            
+            for (int i = 0; i < OpenFrpServerHost.Count; i++)
+            {
+                var host = OpenFrpServerHost[i];
+                var address = userProxies.List
+                    .Where(p => p.FriendlyNode == host && !string.IsNullOrEmpty(p.ConnectAddress))
+                    .Select(p => p.ConnectAddress?.Split(':')[0])
+                    .FirstOrDefault();
+
+                if (string.IsNullOrEmpty(address)) continue;
+
+                var latency = await _pingService.Ping(address);
+                if (latency.HasValue)
+                {
+                    var latencyText = latency.Value == -1 ? "超时" : $"{latency.Value}ms";
+                    OpenFrpServerHost[i] = $"[{latencyText}] {host}";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            OpenFrpPingStatus = $"Error: {ex.Message}";
         }
     }
     
@@ -114,7 +161,7 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     public async Task CustomFrp_ServerPing()
     {
-        string host = CustomFrpServerHost;
+        string host = "CustomFrpServerHost";
         var latency = await _pingService.Ping(host);
         if (latency.HasValue)
         {

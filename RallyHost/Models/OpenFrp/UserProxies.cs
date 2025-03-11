@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -7,7 +8,7 @@ namespace RallyHost.Models.OpenFrp
     public class ProxyInfo
     {
         [JsonProperty("connectAddress")]
-        public string? ConnectAddress { get; set; }
+        public string? ConnectAddress { get; set; } = string.Empty;
 
         [JsonProperty("custom")]
         public string? Custom { get; set; }
@@ -18,8 +19,8 @@ namespace RallyHost.Models.OpenFrp
         [JsonProperty("forceHttps")]
         public bool? ForceHttps { get; set; }
 
-        [JsonProperty("friendlyNode")]
-        public string? FriendlyNode { get; set; }
+        [JsonProperty("friendlyNode")] 
+        public string? FriendlyNode { get; set; } = string.Empty;
 
         [JsonProperty("id")]
         public int? Id { get; set; }
@@ -69,14 +70,14 @@ namespace RallyHost.Models.OpenFrp
         [JsonProperty("remotePort")]
         public int? RemotePort { get; set; }
     }
-
+    
     public class UserProxies
     {
         [JsonProperty("total")]
         public int? Total { get; set; }
 
-        [JsonProperty("list")]
-        public List<ProxyInfo>? List { get; set; }
+        [JsonProperty("list")] 
+        public List<ProxyInfo>? List { get; set; } = new();
     }
 
     public class UserProxiesResponse
