@@ -43,8 +43,9 @@ public static class ServiceCollectionExtensions
             .Build();
         collection.AddOptions();
         collection.Configure<Config>(configuration.GetSection(nameof(Config))); 
+        collection.Configure<FrpcConfigs>(configuration.GetSection(nameof(FrpcConfigs)));
         collection.AddSingleton<IConfiguration>(configuration);
-        collection.AddSingleton<IConfigWriter, AppConfigWriter>();
+        collection.AddSingleton<IConfigWriter, ConfigWriter>();
 
         collection.AddTransient<HttpClient>();
         collection.AddSingleton<IOpenFrpService, OpenFrpService>();

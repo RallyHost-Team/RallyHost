@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace RallyHost.Services;
 
-public class AppConfigWriter : IConfigWriter
+public class ConfigWriter : IConfigWriter
 {
     private readonly IConfigurationRoot _configRoot;
     private readonly string _configPath;
 
-    public AppConfigWriter(IConfiguration config)
+    public ConfigWriter(IConfiguration config)
     {
         _configRoot = (IConfigurationRoot)config;
         _configPath = Path.Combine(
@@ -20,7 +20,7 @@ public class AppConfigWriter : IConfigWriter
             "config.json");
     }
 
-    public async Task SaveConfigAsync<T>(string sectionName, T config) where T : class
+    public async Task SaveConfigAsync<T>(string sectionName, T config) where T : class?
     {
         // 加载现有配置
         var json = File.Exists(_configPath) ?
