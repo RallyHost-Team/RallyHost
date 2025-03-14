@@ -18,19 +18,30 @@ public class FrpcService : IFrpcService
         _config = configOptions.Value;
     }
 
-    public async Task<bool> StartFrpcProcessAsync(string configPath, Action<string> outputHandler)
+    public async Task<bool> StartFrpcProcessAsync(Action<string> outputHandler)
     {
-        string executablePath = _config.FrpcLocation ?? throw new InvalidOperationException("FrpcLocation is not configured.");
-        string command = executablePath;
+        string frpcFolder = _config.FrpcFolder ?? throw new InvalidOperationException("FrpcLocation is not configured.");
+        string command = frpcFolder;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            command = Path.Combine(frpcFolder, "frpc.exe");
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            command = Path.Combine(frpcFolder, "frpc");
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            command = Path.Combine(frpcFolder, "frpc");
+        }
+        var configPath = Path.Combine(frpcFolder, "frpc.json");
         string arguments = $"-c \"{configPath}\"";
-
-        var workingDirectory = Path.GetDirectoryName(executablePath);
 
         var stdOutPipe = PipeTarget.ToDelegate(outputHandler);
 
         var result = await Cli.Wrap(command)
             .WithArguments(arguments)
-            .WithWorkingDirectory(workingDirectory)
+            .WithWorkingDirectory(frpcFolder)
             .WithStandardOutputPipe(stdOutPipe)
             .WithValidation(CommandResultValidation.None)
             .ExecuteBufferedAsync();

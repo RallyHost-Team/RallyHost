@@ -5,5 +5,5 @@ namespace RallyHost.Services;
 
 public interface IFrpcService
 {
-    public Task<bool> StartFrpcProcessAsync(string configPath, Action<string> outputHandler);
+    public Task<bool> StartFrpcProcessAsync(Action<string> outputHandler);
 }

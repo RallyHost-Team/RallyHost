@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using RallyHost.Models;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace RallyHost.Services;
 
@@ -21,15 +23,18 @@ public class FrpcConfigService : IFrpcConfigService
     /// apply config to frpc
     /// </summary>
     /// <exception cref="FileNotFoundException"></exception>
-    public void ApplyConfig()
+    public async Task ApplyConfig(FrpcConfig frpcConfig)
     {
-        var frpcLocationPath = _config.FrpcLocation;
+        var frpcLocationPath = _config.FrpcFolder;
         if (string.IsNullOrEmpty(frpcLocationPath))
         {
             throw new FileNotFoundException("FrpcLocation is not configured.");
         }
-        var frpcLocation = new DirectoryInfo(_config.FrpcLocation);
-        var frpcConfigPath = Path.Combine(frpcLocation.FullName, "frpc.ini");
+        var frpcLocation = new DirectoryInfo(_config.FrpcFolder);
+        var frpcConfigPath = Path.Combine(frpcLocation.FullName, "frpc.json");
+        await File.WriteAllTextAsync(frpcConfigPath, JsonConvert.SerializeObject(frpcConfig, Formatting.Indented));
+        _frpcConfigs.appliedConfig = frpcConfig;
+        await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
     }
     
     public async Task AddConfig(FrpcConfig frpcConfig)
