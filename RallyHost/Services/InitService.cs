@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
@@ -29,7 +30,7 @@ public class InitService
         _configWriter = configWriter;
     }
 
-    public async Task DownloadLatestFrpc(string? path, Action<double>? progressReporter = null)
+    public async Task DownloadLatestFrpc(string? path, Action<double>? progressReporter = null, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(FRP_GITHUB_LATEST_RELEASE_API_URL);
         if (response.IsSuccessStatusCode)
@@ -55,7 +56,7 @@ public class InitService
                     if (!string.IsNullOrEmpty(downloadLink))
                     {
                         var downloadPath = Path.Combine(Path.GetTempPath(), "frpc.tar.gz");
-                        await DownloadFileWithProgressAsync(downloadLink, downloadPath, progressReporter);
+                        await DownloadFileWithProgressAsync(downloadLink, downloadPath, progressReporter, cancellationToken);
 
                         var extractPath = Path.GetDirectoryName(path) ?? Path.Combine(Directory.GetCurrentDirectory(), "frpc");
                         ExtractTarGz(downloadPath, extractPath);
@@ -70,42 +71,49 @@ public class InitService
                         }
 
                         File.Delete(downloadPath);
+                        _config.FrpcFolder = extractPath;
+                        await _configWriter.SaveConfigAsync(nameof(Config), _config);
                     }
                 }
             }
         }
     }
 
-    private async Task DownloadFileWithProgressAsync(string url, string outputPath, Action<double>? progressReporter)
+    private async Task DownloadFileWithProgressAsync(string url, string outputPath, Action<double>? progressReporter, CancellationToken cancellationToken)
     {
-        using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+        using (var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken))
         {
             response.EnsureSuccessStatusCode();
-
+    
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
             var canReportProgress = totalBytes != -1 && progressReporter != null;
-
-            using (var downloadStream = await response.Content.ReadAsStreamAsync())
+    
+            using (var downloadStream = await response.Content.ReadAsStreamAsync(cancellationToken))
             using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 var totalRead = 0L;
                 var buffer = new byte[8192];
                 var isMoreToRead = true;
-
+    
                 do
                 {
-                    var read = await downloadStream.ReadAsync(buffer, 0, buffer.Length);
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        await Cleanup(outputPath);
+                        break;
+                    }
+                    var read = await downloadStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
                     if (read == 0)
                     {
                         isMoreToRead = false;
                         progressReporter?.Invoke(100);
                         continue;
                     }
-
-                    await fileStream.WriteAsync(buffer, 0, read);
-
+    
+                    await fileStream.WriteAsync(buffer, 0, read, cancellationToken);
+    
                     totalRead += read;
-
+    
                     if (canReportProgress)
                     {
                         var progress = (double)totalRead / totalBytes * 100;
@@ -115,6 +123,17 @@ public class InitService
                 while (isMoreToRead);
             }
         }
+    }
+    
+    private async Task Cleanup(string outputPath)
+    {
+        await Task.Run(() =>
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        });
     }
 
     private void ExtractTarGz(string filePath, string outputDir)
