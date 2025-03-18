@@ -25,7 +25,8 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string? _openFrpToken = "";
     [ObservableProperty] private string _openFrpPingStatus = "";
     [ObservableProperty] private string _customFrpPingStatus = ""; 
-    [ObservableProperty] private bool _openFrpTokenInputWindowIsOpen = false;
+    [ObservableProperty] private bool _popUpOpenFrpTokenInputWindowIsOpen = false;
+    [ObservableProperty] private bool _popUpCustomFrpEditWindowIsOpen = false;
     
     public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
     {
@@ -48,7 +49,7 @@ public partial class SettingsViewModel : ViewModelBase
     [RelayCommand]
     public void TogglePopUpOpenFrpWindow_TokenInput()
     {
-        OpenFrpTokenInputWindowIsOpen = !OpenFrpTokenInputWindowIsOpen;
+        PopUpOpenFrpTokenInputWindowIsOpen = !PopUpOpenFrpTokenInputWindowIsOpen;
     }
     
     [RelayCommand]
@@ -97,7 +98,7 @@ public partial class SettingsViewModel : ViewModelBase
                 return;
             }
             
-            for (int i = 0; i < OpenFrpServerHost.Count; i++)
+            for (int i = 0; i < OpenFrpServerHost.Count; ++i)
             {
                 var host = OpenFrpServerHost[i];
                 if (host.Contains(']'))
@@ -106,7 +107,7 @@ public partial class SettingsViewModel : ViewModelBase
                 }
             }
             
-            for (int i = 0; i < OpenFrpServerHost.Count; i++)
+            for (int i = 0; i < OpenFrpServerHost.Count; ++i)
             {
                 var host = OpenFrpServerHost[i];
                 var address = userProxies.List
@@ -134,26 +135,32 @@ public partial class SettingsViewModel : ViewModelBase
     public async Task OpenFrp_TokenInputDone()
     {
         //OpenFrpTokenInputIsDone = true;
-        OpenFrpTokenInputWindowIsOpen = false;
+        PopUpOpenFrpTokenInputWindowIsOpen = !PopUpOpenFrpTokenInputWindowIsOpen;
         _config.OpenFrpToken = OpenFrpToken;
         await _configWriter.SaveConfigAsync(nameof(Config), _config);
-        OpenFrp_Refresh();
+        await OpenFrp_Refresh();
     }
     
     [RelayCommand]
-    public void TogglePopUpCustomFrpWindow_Add()
+    public void TogglePopUpCustomFrpEditWindow_Add()
     {
-        
+        PopUpCustomFrpEditWindowIsOpen = !PopUpCustomFrpEditWindowIsOpen;
     }
     
     [RelayCommand]
-    public void TogglePopUpCustomFrpWindow_Edit()
+    public void TogglePopUpCustomFrpEditWindow()
     {
-        
+        PopUpCustomFrpEditWindowIsOpen = !PopUpCustomFrpEditWindowIsOpen;
     }
     
     [RelayCommand]
-    public void CustomFrp_ServerRemove()
+    public async Task TogglePopUpCustomFrpEditWindow_Done()
+    {
+        PopUpCustomFrpEditWindowIsOpen = !PopUpCustomFrpEditWindowIsOpen;
+    }
+    
+    [RelayCommand]
+    public void CustomFrp_RemoveSelectedServer()
     {
         
     }

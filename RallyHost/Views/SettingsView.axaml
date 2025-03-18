@@ -11,17 +11,39 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:SettingsViewModel/>
     </Design.DataContext>
-    
     <ScrollViewer>
             <Border>
                 <Grid RowDefinitions="Auto, Auto, Auto, Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Border Grid.RowSpan="1" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding OpenFrpTokenInputWindowIsOpen}" IsEnabled="{Binding OpenFrpTokenInputWindowIsOpen}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Grid.RowSpan="1" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpOpenFrpTokenInputWindowIsOpen}" IsEnabled="{Binding PopUpOpenFrpTokenInputWindowIsOpen}" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Grid RowDefinitions="Auto">
                             <StackPanel>
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="OpenFrp Token:"/>
-                                <TextBox VerticalAlignment="Center" HorizontalAlignment="Center" Watermark="Enter your token" Width="500" Text="{Binding OpenFrpToken}"/>
+                                <TextBox VerticalAlignment="Center" HorizontalAlignment="Center" PasswordChar="*" Watermark="Enter your token" Width="420" Text="{Binding OpenFrpToken}"/>
                                 <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Done" Command="{Binding OpenFrp_TokenInputDoneCommand}"/>
                             </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.RowSpan="2" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpCustomFrpEditWindowIsOpen}" IsEnabled="{Binding PopUpCustomFrpEditWindowIsOpen}">
+                        <Grid RowDefinitions="1*, 40">
+                            <StackPanel>
+                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
+                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">服务器名称</TextBlock>
+                                    <TextBox Grid.Column="1"></TextBox>
+                                </Grid>
+                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
+                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">服务器地址</TextBlock>
+                                    <TextBox Grid.Column="1"></TextBox>
+                                </Grid>
+                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
+                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">服务器端口</TextBlock>
+                                    <TextBox Grid.Column="1"></TextBox>
+                                </Grid>
+                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
+                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">服务器密钥</TextBlock>
+                                    <TextBox Grid.Column="1"></TextBox>
+                                </Grid>
+                            </StackPanel>
+                            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpCustomFrpEditWindow_DoneCommand}">确定</Button>
                         </Grid>
                     </Border>
                     <Expander Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="FrpExpander" BorderThickness="0" Margin="5">
@@ -34,11 +56,10 @@
                             <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_RefreshCommand}"></Button>
                             <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_ServerPingCommand}"></Button>
                             <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding OpenFrpServerHost}"></ListBox>
-                            
                             <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp" VerticalAlignment="Center"></TextBlock>
-                            <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpWindow_AddCommand}"></Button>
-                            <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpWindow_EditCommand}"></Button>
-                            <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpRemove" Content="Remove" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerRemoveCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindow_AddCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindowCommand}"></Button>
+                            <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpRemove" Content="Remove" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_RemoveSelectedServerCommand}"></Button>
                             <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerPingCommand}"></Button>
                             <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding CustomFrpServerHost}"></ListBox>
                         </Grid>

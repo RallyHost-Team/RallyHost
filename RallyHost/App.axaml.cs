@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RallyHost.ViewModels;
 using RallyHost.Views;
 using System.Linq;
+using HotAvalonia;
 
 namespace RallyHost
 {
@@ -14,6 +15,7 @@ namespace RallyHost
     {
         public override void Initialize()
         {
+            this.EnableHotReload();
             AvaloniaXamlLoader.Load(this);
         }
 

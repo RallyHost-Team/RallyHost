@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using RallyHost.Views;
@@ -19,6 +21,20 @@ namespace RallyHost.ViewModels
             _settingsViewModel = settingsViewModel;
             _welcomeViewModel = welcomeViewModel;
             CurrentView = new WelcomeView { DataContext = _welcomeViewModel };
+        }
+
+        [RelayCommand]
+        private void MinimizeWindow()
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                desktop.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        [RelayCommand]
+        private void CloseWindow()
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                desktop.MainWindow.Close();
         }
 
         [RelayCommand]

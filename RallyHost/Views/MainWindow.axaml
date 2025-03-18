@@ -8,35 +8,62 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="RallyHost"
-        Height="450"
-        Width="800">
+        Width="900"
+        Height="500"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
+    
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
-	<Border>
-		<Grid ColumnDefinitions="2*, 8*">
-			<Border Background="LightGreen">
-				<Grid RowDefinitions="48, 32, 32, auto">
-					<Border Background="AntiqueWhite">
-						<TextBlock FontWeight="ExtraBold" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Center">RallyHost</TextBlock>
-					</Border>
-					<Border Grid.Row="1" Background="Aquamarine" BorderBrush="Black" BorderThickness="1">
-						<RadioButton VerticalAlignment="Center" HorizontalAlignment="Center" GroupName="PageButtons" CommandParameter="Home" Command="{Binding ToggleViewCommand}">Home</RadioButton>
-					</Border>
-					<Border Grid.Row="2" Background="Aquamarine" BorderBrush="Black" BorderThickness="1">
-						<RadioButton VerticalAlignment="Center" HorizontalAlignment="Center" GroupName="PageButtons" CommandParameter="Settings" Command="{Binding ToggleViewCommand}">Settings</RadioButton>
-					</Border>
-					<Border Grid.Row="3">
+    
+    <Window.Styles>
+        <Style Selector="Grid.TittleBar">
+            <Setter Property="Background" Value="Wheat"/>
+        </Style>
+    </Window.Styles>
 
-					</Border>
-				</Grid>
-			</Border>
-			<Border Grid.Column="1" x:Name="ContentBorder">
-				<ContentPresenter Content="{Binding CurrentView}"/>
-			</Border>
-		</Grid>
-	</Border>
+    <Border>
+        <Grid RowDefinitions="1*, 8*" ColumnDefinitions="*">
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Classes="TittleBar" PointerPressed="OnPointerPressed">
+                <Border Grid.Column="0" Margin="10" HorizontalAlignment="Left">
+                    <Panel Background="Transparent" IsHitTestVisible="False">
+                        <TextBlock FontWeight="ExtraBold" FontSize="18" VerticalAlignment="Center">RallyHost</TextBlock>
+                    </Panel>
+                </Border>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Margin="5" Padding="15,5" Name="HomeButton" CommandParameter="Home" Command="{Binding ToggleViewCommand}">Home</Button>
+                    <Button Margin="5" Padding="15,5" Name="SettingsButton" CommandParameter="Settings" Command="{Binding ToggleViewCommand}">Settings</Button>
+                    <Button Margin="5" Padding="15,5" Name="InfoButton" CommandParameter="About" Command="{Binding ToggleViewCommand}">Info</Button>
+                </StackPanel>
+                <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Width="30" Height="30" FontSize="16" Margin="0" Content="-" 
+                            HorizontalContentAlignment="Center" Command="{Binding MinimizeWindowCommand}">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Gray"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                    <Button Width="30" Height="30" FontSize="16" Margin="5" Content="×" 
+                            HorizontalContentAlignment="Center" Command="{Binding CloseWindowCommand}">
+                        <Button.Styles>
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Red"/>
+                            </Style>
+                        </Button.Styles>
+                    </Button>
+                </StackPanel>
+            </Grid>
 
+            <Border Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ContentBorder">
+                <ContentControl Content="{Binding CurrentView}"/>
+            </Border>
+        </Grid>
+    </Border>
 </Window>
