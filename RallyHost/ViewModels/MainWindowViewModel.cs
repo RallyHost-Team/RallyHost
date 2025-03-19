@@ -12,8 +12,8 @@ namespace RallyHost.ViewModels
         private readonly HomeViewModel _homeViewModel;
         private readonly SettingsViewModel _settingsViewModel;
         private readonly WelcomeViewModel _welcomeViewModel;
-
         [ObservableProperty] private UserControl _currentView;
+        [ObservableProperty] private string _currentViewName;
 
         public MainWindowViewModel(HomeViewModel homeViewModel, SettingsViewModel settingsViewModel, WelcomeViewModel welcomeViewModel)
         {
@@ -21,25 +21,28 @@ namespace RallyHost.ViewModels
             _settingsViewModel = settingsViewModel;
             _welcomeViewModel = welcomeViewModel;
             CurrentView = new WelcomeView { DataContext = _welcomeViewModel };
+            CurrentViewName = "About";
         }
 
         [RelayCommand]
         private void MinimizeWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                desktop.MainWindow.WindowState = WindowState.Minimized;
+                if (desktop.MainWindow != null)
+                    desktop.MainWindow.WindowState = WindowState.Minimized;
         }
 
         [RelayCommand]
         private void CloseWindow()
         {
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                desktop.MainWindow.Close();
+                desktop.MainWindow?.Close();
         }
 
         [RelayCommand]
         public void ToggleView(string viewName)
         {
+            CurrentViewName = viewName;
             CurrentView = viewName switch
             {
                 "Home" => new HomeView { DataContext = _homeViewModel },

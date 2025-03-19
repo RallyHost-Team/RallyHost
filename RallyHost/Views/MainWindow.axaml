@@ -6,6 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="RallyHost.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
+        xmlns:converters="using:RallyHost.Converters"
         Icon="/Assets/avalonia-logo.ico"
         Title="RallyHost"
         Width="900"
@@ -17,19 +18,29 @@
         ExtendClientAreaChromeHints="NoChrome"
         ExtendClientAreaTitleBarHeightHint="-1"
         SystemDecorations="Full">
-    
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
-    
+    <Window.Resources>
+        <converters:ToggleButtonCheckedConverter x:Key="ToggleButtonCheckedConverter"/>
+    </Window.Resources>
     <Window.Styles>
         <Style Selector="Grid.TittleBar">
-            <Setter Property="Background" Value="Wheat"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,50%">
+                        <GradientStop Color="#08AEEA" Offset="0.0"/>
+                        <GradientStop Color="#2AF598" Offset="0.3"/>
+                        <GradientStop Color="#08AEEA" Offset="0.6"/>
+                        <GradientStop Color="#2AF598" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
         </Style>
+        <StyleInclude Source="/Styles/ButtonStyles.axaml"/>
     </Window.Styles>
-
     <Border>
         <Grid RowDefinitions="1*, 8*" ColumnDefinitions="*">
             <ExperimentalAcrylicBorder Name="AcrylicBorder"
@@ -50,30 +61,31 @@
                     </Panel>
                 </Border>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Margin="5" Padding="15,5" Name="HomeButton" CommandParameter="Home" Command="{Binding ToggleViewCommand}">Home</Button>
-                    <Button Margin="5" Padding="15,5" Name="SettingsButton" CommandParameter="Settings" Command="{Binding ToggleViewCommand}">Settings</Button>
-                    <Button Margin="5" Padding="15,5" Name="InfoButton" CommandParameter="About" Command="{Binding ToggleViewCommand}">Info</Button>
+                    <ToggleButton Margin="5" Padding="15,5" 
+                                  Classes="TittleBar" Name="HomeButton" 
+                                  IsChecked="{Binding CurrentViewName, Converter={StaticResource ToggleButtonCheckedConverter}, ConverterParameter=Home}"
+                                  CommandParameter="Home" 
+                                  Command="{Binding ToggleViewCommand}">Home</ToggleButton>
+                    <ToggleButton Margin="5" Padding="15,5" 
+                                  Classes="TittleBar" Name="SettingsButton" 
+                                  IsChecked="{Binding CurrentViewName, Converter={StaticResource ToggleButtonCheckedConverter}, ConverterParameter=Settings}"
+                                  CommandParameter="Settings" 
+                                  Command="{Binding ToggleViewCommand}">Settings</ToggleButton>
+                    <ToggleButton Margin="5" Padding="15,5" 
+                                  Classes="TittleBar" Name="InfoButton" 
+                                  IsChecked="{Binding CurrentViewName, Converter={StaticResource ToggleButtonCheckedConverter}, ConverterParameter=About}"
+                                  CommandParameter="About" 
+                                  Command="{Binding ToggleViewCommand}">About</ToggleButton>
                 </StackPanel>
                 <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button x:Name="MinimizedButton" Width="30" Height="30" FontSize="16" Margin="0" Content="-" 
+                    <Button x:Name="MinimizedButton" Width="30" Height="30" FontSize="16" Margin="0" Classes="Minimize" Content="-" 
                             HorizontalContentAlignment="Center" Command="{Binding MinimizeWindowCommand}">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="Gray"/>
-                            </Style>
-                        </Button.Styles>
                     </Button>
-                    <Button x:Name="CloseButton" Width="30" Height="30" FontSize="16" Margin="5" Content="×" 
+                    <Button x:Name="CloseButton" Width="30" Height="30" FontSize="16" Margin="5" Classes="Close" Content="×" 
                             HorizontalContentAlignment="Center" Command="{Binding CloseWindowCommand}">
-                        <Button.Styles>
-                            <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="Red"/>
-                            </Style>
-                        </Button.Styles>
                     </Button>
                 </StackPanel>
             </Grid>
-
             <Border Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" x:Name="ContentBorder">
                 <ContentControl Content="{Binding CurrentView}"/>
             </Border>

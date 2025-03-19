@@ -8,13 +8,13 @@ namespace RallyHost.Views
     public partial class MainWindow : Window
     {
         public static MainWindow? Instance { get; set; }
-
+        
         public MainWindow()
         {
             InitializeComponent();
             Instance = this;
             
-            // Adapt to OSX
+            //Adapt to OSX
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 Main.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.PreferSystemChrome;

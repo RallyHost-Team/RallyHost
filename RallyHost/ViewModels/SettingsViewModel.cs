@@ -37,15 +37,6 @@ public partial class SettingsViewModel : ViewModelBase
         _openFrpToken = _config.OpenFrpToken;
     }
     
-/*
-    [RelayCommand]
-    public void ChangeLoginStatus()
-    {
-        LoginStatus = "Logging...";
-        Task.Delay(2000).ContinueWith(_ => LoginStatus = "False");
-    }
-*/
-    
     [RelayCommand]
     public void TogglePopUpOpenFrpWindow_TokenInput()
     {
