@@ -15,7 +15,7 @@
         <Grid RowDefinitions="1*, auto">
             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="48">Welcome to RallyHost!</TextBlock>
             <Grid Grid.Row="1" ColumnDefinitions="1*, Auto, Auto, 1*">
-                <TextBox Grid.Column="1" Watermark="Token" MinWidth="120" Margin="0,0,2,2" Text="{Binding OpenFrpToken}"></TextBox>
+                <TextBox Grid.Column="1" Watermark="Token" MinWidth="120" Margin="0,0,2,2" Text="{Binding OpenFrpAuthorization}"></TextBox>
                 <Button Grid.Column="2" HorizontalAlignment="Center" Command="{Binding TestOpenFrpCommand}">Test OpenFrp</Button>
             </Grid>
         </Grid>

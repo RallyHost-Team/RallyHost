@@ -4,5 +4,6 @@ namespace RallyHost.ViewModels
 {
     public class ViewModelBase : ObservableObject
     {
+        
     }
 }

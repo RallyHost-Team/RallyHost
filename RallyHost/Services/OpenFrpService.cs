@@ -27,7 +27,7 @@ public class OpenFrpService : IOpenFrpService
     public async Task<UserInfo> GetUserInfoAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Post, USER_INFO_URL);
-        request.Headers.Add("Authorization", $"{_config.OpenFrpToken}");
+        request.Headers.Add("Authorization", $"{_config.OpenFrpAuthorization}");
 
         var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
@@ -39,7 +39,7 @@ public class OpenFrpService : IOpenFrpService
     public async Task<UserProxies> GetUserProxiesAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Post, USER_PROXIES_URL);
-        request.Headers.Add("Authorization", $"{_config.OpenFrpToken}");
+        request.Headers.Add("Authorization", $"{_config.OpenFrpAuthorization}");
 
         var response = await _httpClient.SendAsync(request);
         response.EnsureSuccessStatusCode();
