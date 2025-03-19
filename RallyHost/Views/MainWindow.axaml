@@ -11,10 +11,12 @@
         Width="900"
         Height="500"
         CanResize="False"
-        WindowStartupLocation="CenterOwner"
+        x:Name="Main"
+        TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1">
+        ExtendClientAreaTitleBarHeightHint="-1"
+        SystemDecorations="Full">
     
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
@@ -30,10 +32,21 @@
 
     <Border>
         <Grid RowDefinitions="1*, 8*" ColumnDefinitions="*">
+            <ExperimentalAcrylicBorder Name="AcrylicBorder"
+                                       IsHitTestVisible="False"
+                                       IsVisible="True">
+                <ExperimentalAcrylicBorder.Material>
+                    <ExperimentalAcrylicMaterial BackgroundSource="Digger"
+                                                 TintColor="{DynamicResource AcrylicColor}"
+                                                 TintOpacity="1"
+                                                 FallbackColor="{DynamicResource AcrylicColor}"
+                                                 MaterialOpacity="1" />
+                </ExperimentalAcrylicBorder.Material>
+            </ExperimentalAcrylicBorder>
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, *" Classes="TittleBar" PointerPressed="OnPointerPressed">
                 <Border Grid.Column="0" Margin="10" HorizontalAlignment="Left">
-                    <Panel Background="Transparent" IsHitTestVisible="False">
-                        <TextBlock FontWeight="ExtraBold" FontSize="18" VerticalAlignment="Center">RallyHost</TextBlock>
+                    <Panel Margin="{Binding #Main.OffScreenMargin}" Background="Transparent" IsHitTestVisible="False">
+                        <TextBlock x:Name="TitleTextBlock" FontWeight="ExtraBold" FontSize="18" VerticalAlignment="Center">RallyHost</TextBlock>
                     </Panel>
                 </Border>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -42,7 +55,7 @@
                     <Button Margin="5" Padding="15,5" Name="InfoButton" CommandParameter="About" Command="{Binding ToggleViewCommand}">Info</Button>
                 </StackPanel>
                 <StackPanel Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Width="30" Height="30" FontSize="16" Margin="0" Content="-" 
+                    <Button x:Name="MinimizedButton" Width="30" Height="30" FontSize="16" Margin="0" Content="-" 
                             HorizontalContentAlignment="Center" Command="{Binding MinimizeWindowCommand}">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">
@@ -50,7 +63,7 @@
                             </Style>
                         </Button.Styles>
                     </Button>
-                    <Button Width="30" Height="30" FontSize="16" Margin="5" Content="×" 
+                    <Button x:Name="CloseButton" Width="30" Height="30" FontSize="16" Margin="5" Content="×" 
                             HorizontalContentAlignment="Center" Command="{Binding CloseWindowCommand}">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">

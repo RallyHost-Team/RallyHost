@@ -1,5 +1,7 @@
+using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Platform;
 
 namespace RallyHost.Views
 {
@@ -11,6 +13,15 @@ namespace RallyHost.Views
         {
             InitializeComponent();
             Instance = this;
+            
+            // Adapt to OSX
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Main.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.PreferSystemChrome;
+                TitleTextBlock.Margin = new(0,10,0,0);
+                MinimizedButton.IsVisible = false;
+                CloseButton.IsVisible = false;
+            }
         }
 
         private void OnPointerPressed(object sender, PointerPressedEventArgs e)
