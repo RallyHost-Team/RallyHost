@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -39,7 +40,7 @@ namespace RallyHost.ViewModels
         }
 
         [RelayCommand]
-        public void ToggleView(string viewName)
+        public async Task ToggleView(string viewName)
         {
             CurrentViewName = viewName;
             CurrentView = viewName switch
@@ -48,6 +49,11 @@ namespace RallyHost.ViewModels
                 "Settings" => new SettingsView { DataContext = _settingsViewModel },
                 _ => new WelcomeView { DataContext = _welcomeViewModel }
             };
+            
+            if (viewName == "Settings")
+            {
+                await _settingsViewModel.InitializeSettingsCommand.ExecuteAsync(null);
+            }
         }
     }
 }

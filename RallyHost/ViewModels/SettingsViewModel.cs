@@ -44,13 +44,17 @@ public partial class SettingsViewModel : ViewModelBase
             _config.OpenFrpServers.Select(s => s.FriendlyNode ?? string.Empty)
                 .Where(n => !string.IsNullOrEmpty(n))
                 .Distinct());
-    
+        
         _customFrpServerHost = new ObservableCollection<string>(
             _config.CustomFrpServers.Select(s => 
                 !string.IsNullOrEmpty(s.ProxyName) ? s.ProxyName : s.ConnectAddress)!);
-        
-        _ = OpenFrp_ServerPing();
-        _ = CustomFrp_ServerPing();
+    }
+    
+    [RelayCommand]
+    public async Task InitializeSettings()
+    {
+        await OpenFrp_ServerPing();
+        await CustomFrp_ServerPing();
     }
     
     [RelayCommand]
