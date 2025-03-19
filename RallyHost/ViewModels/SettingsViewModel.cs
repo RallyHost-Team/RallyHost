@@ -50,6 +50,7 @@ public partial class SettingsViewModel : ViewModelBase
                 !string.IsNullOrEmpty(s.ProxyName) ? s.ProxyName : s.ConnectAddress)!);
         
         _ = OpenFrp_ServerPing();
+        _ = CustomFrp_ServerPing();
     }
     
     [RelayCommand]
