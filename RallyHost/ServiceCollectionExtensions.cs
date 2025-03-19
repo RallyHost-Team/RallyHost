@@ -32,6 +32,10 @@ public static class ServiceCollectionExtensions
                                                     "SyncLink": ""
                                                 }
                                               ]
+                                            },
+                                            "FrpcConfigs": {
+                                              "Configs": [],
+                                              "AppliedConfig": null
                                             }
                                           }
                                           """);

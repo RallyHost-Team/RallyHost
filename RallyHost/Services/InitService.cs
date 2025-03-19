@@ -29,7 +29,11 @@ public class InitService
         _config = config.Value;
         _configWriter = configWriter;
     }
-
+    
+    public bool CheckFrpcExist()
+    {
+        return Directory.Exists(_config.FrpcFolder);
+    }
     public async Task DownloadLatestFrpc(string? path, Action<double>? progressReporter = null, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(FRP_GITHUB_LATEST_RELEASE_API_URL);
