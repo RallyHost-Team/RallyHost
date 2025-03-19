@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
             File.WriteAllText(configPath, """
                                           {
                                             "Config": {
+                                              "PlayerName": "",
                                               "OpenFrpToken": "",
                                               "FrpcLocation": "",
                                               "Profiles": [

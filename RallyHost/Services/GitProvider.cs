@@ -7,6 +7,16 @@ namespace RallyHost.Services;
 
 public class GitProvider : IGitProvider
 {
+    public async Task<bool> InitAsync(string repositoryPath, Action<string> outputHandler)
+    {
+        var result = await Cli.Wrap("git")
+            .WithArguments("init")
+            .WithWorkingDirectory(repositoryPath)
+            .WithStandardOutputPipe(PipeTarget.ToDelegate(outputHandler))
+            .ExecuteAsync();
+
+        return result.ExitCode == 0;
+    }
     public async Task<bool> PullAsync(string repositoryPath, Action<string> outputHandler)
     {
         var result = await Cli.Wrap("git")
