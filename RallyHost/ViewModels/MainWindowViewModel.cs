@@ -20,7 +20,7 @@ namespace RallyHost.ViewModels
             _homeViewModel = homeViewModel;
             _settingsViewModel = settingsViewModel;
             _welcomeViewModel = welcomeViewModel;
-            CurrentView = new WelcomeView { DataContext = _welcomeViewModel };
+            CurrentView = new Views.WelcomeView { DataContext = _welcomeViewModel };
             CurrentViewName = "About";
         }
 
@@ -45,9 +45,9 @@ namespace RallyHost.ViewModels
             CurrentViewName = viewName;
             CurrentView = viewName switch
             {
-                "Home" => new HomeView { DataContext = _homeViewModel },
-                "Settings" => new SettingsView { DataContext = _settingsViewModel },
-                _ => new WelcomeView { DataContext = _welcomeViewModel }
+                "Home" => new Views.HomeView { DataContext = _homeViewModel },
+                "Settings" => new Views.SettingsView { DataContext = _settingsViewModel },
+                _ => new Views.WelcomeView { DataContext = _welcomeViewModel }
             };
             
             if (viewName == "Settings")

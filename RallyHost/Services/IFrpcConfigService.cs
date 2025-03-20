@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using RallyHost.Models;
+using RallyHost.Models.Frpc;
 
 namespace RallyHost.Services;
 

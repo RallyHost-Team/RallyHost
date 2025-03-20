@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using RallyHost.Services;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Net.NetworkInformation;
+using RallyHost.Models.Frpc;
 
 namespace RallyHost;
 

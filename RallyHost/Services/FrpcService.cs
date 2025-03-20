@@ -4,8 +4,10 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using CliWrap;
 using CliWrap.Buffered;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Options;
 using RallyHost.Models;
+using RallyHost.Models.Frpc;
 
 namespace RallyHost.Services;
 
@@ -47,5 +49,40 @@ public class FrpcService : IFrpcService
             .ExecuteBufferedAsync();
 
         return result.ExitCode == 0;
+    }
+
+    public async Task<bool> StartFrpcProcessWithStatusMessenger()
+    {
+        return await StartFrpcProcessAsync((output) =>
+        {
+            var status = FrpcStatus.FromLog(output);
+            WeakReferenceMessenger.Default.Send(new FrpcStatusMessage(status));
+        });
+    }
+    
+    public async Task<bool> StopFrpcProcessAsync()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var result = await Cli.Wrap("taskkill")
+                .WithArguments("/IM frpc.exe /F")
+                .ExecuteAsync();
+            return result.ExitCode == 0;
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            var result = await Cli.Wrap("pkill")
+                .WithArguments("frpc")
+                .ExecuteAsync();
+            return result.ExitCode == 0;
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            var result = await Cli.Wrap("pkill")
+                .WithArguments("frpc")
+                .ExecuteAsync();
+            return result.ExitCode == 0;
+        }
+        return false;
     }
 }

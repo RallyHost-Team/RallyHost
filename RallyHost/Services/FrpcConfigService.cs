@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using RallyHost.Models;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using RallyHost.Models.Frpc;
 
 namespace RallyHost.Services;
 
@@ -33,7 +34,7 @@ public class FrpcConfigService : IFrpcConfigService
         var frpcLocation = new DirectoryInfo(_config.FrpcFolder);
         var frpcConfigPath = Path.Combine(frpcLocation.FullName, "frpc.json");
         await File.WriteAllTextAsync(frpcConfigPath, JsonConvert.SerializeObject(frpcConfig, Formatting.Indented));
-        _frpcConfigs.appliedConfig = frpcConfig;
+        _frpcConfigs.AppliedConfig = frpcConfig;
         await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
     }
     

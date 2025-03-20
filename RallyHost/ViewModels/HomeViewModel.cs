@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Options;
 using RallyHost.Helpers;
 using RallyHost.Models;
+using RallyHost.Models.Frpc;
 using RallyHost.Services;
 
 namespace RallyHost.ViewModels
@@ -28,6 +30,11 @@ namespace RallyHost.ViewModels
             _configWriter = configWriter;
             _profiles = new ObservableCollection<Profile>(_config.Profiles);
             SelectedProfile = Profiles.FirstOrDefault();
+            
+            WeakReferenceMessenger.Default.Register<FrpcStatusMessage>(this, (r, m) =>
+            {
+                // Todo: Handle FrpcStatusMessage
+            });
         }
 
         [RelayCommand]

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-namespace RallyHost.Models;
+namespace RallyHost.Models.Frpc;
 
 public class FrpcConfigs
 {
-    public FrpcConfig? appliedConfig { get; set; }
+    public FrpcConfig? AppliedConfig { get; set; }
     public List<FrpcConfig>? Configs { get; set; }
 }
