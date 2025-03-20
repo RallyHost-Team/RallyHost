@@ -21,6 +21,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IConfigWriter _configWriter;
     [ObservableProperty] private ObservableCollection<string> _openFrpServerHost;
     [ObservableProperty] private ObservableCollection<string> _customFrpServerHost;
+    [ObservableProperty] private string? _frpcLocation;
     [ObservableProperty] private string? _openFrpAuthorization;
     [ObservableProperty] private string? _openFrpPingStatus = string.Empty;
     [ObservableProperty] private string? _customFrpPingStatus = string.Empty;
@@ -32,6 +33,12 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private bool _popUpOpenFrpAuthorizationInputWindowIsOpen;
     [ObservableProperty] private bool _popUpCustomFrpEditWindowIsOpen;
     
+    // DON'T REMOVE THIS
+    // PREVIEW DOESN'T WORK WITHOUT THIS
+    public SettingsViewModel()
+    {
+        
+    }
     public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
     {
         _pingService = pingService;

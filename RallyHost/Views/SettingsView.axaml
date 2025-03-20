@@ -3,6 +3,7 @@
              xmlns:vm="using:RallyHost.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:RallyHost.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RallyHost.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
@@ -50,7 +51,9 @@
                         <Expander.Header>
                         Frp
                         </Expander.Header>
-                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel>
+                            <controls:OptionGrid LabelText="FrpcLocation" TextBoxText="{Binding FrpcLocation}" IsButtonVisible="True" ButtonText="Locate" />
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
                             <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Authorization" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpOpenFrpWindow_AuthorizationInputCommand}"></Button>
                             <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpUserInfo" Content="UserInfo" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_GetUserInfoCommand}"></Button>
@@ -64,6 +67,7 @@
                             <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerPingCommand}"></Button>
                             <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding CustomFrpServerHost}" SelectedItem="{Binding SelectedCustomFrpServer}"></ListBox>
                         </Grid>
+                        </StackPanel>
                     </Expander>
                     <Expander Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
                         <Expander.Header>
