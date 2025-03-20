@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using System.Threading.Tasks;
 using Avalonia.Controls;
+using RallyHost.Controls;
 using RallyHost.Views;
 
 namespace RallyHost.Helpers
@@ -17,17 +13,9 @@ namespace RallyHost.Helpers
             return await dialog.ShowAsync(MainWindow.Instance);
         }
 
-        public static async Task ShowMessageAsync(string title, string message)
+        public static async Task ShowMessageAsync(string title, string message, MessageType messageType = MessageType.Information)
         {
-            var dialog = new Window
-            {
-                Title = title,
-                Content = new TextBlock { Text = message },
-                Width = 300,
-                Height = 100, 
-                FontSize = 20
-            };
-            await dialog.ShowDialog(MainWindow.Instance);
+            await MessageWindow.ShowAsync(title, message, messageType);
         }
     }
 }

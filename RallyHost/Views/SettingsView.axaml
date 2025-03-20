@@ -27,22 +27,25 @@
                     <Border Grid.RowSpan="2" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpCustomFrpEditWindowIsOpen}" IsEnabled="{Binding PopUpCustomFrpEditWindowIsOpen}">
                         <Grid RowDefinitions="1*, 40">
                             <StackPanel>
-                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center">服务器名称</TextBlock>
-                                    <TextBox Grid.Column="1" Text="{Binding CustomFrpProxyName}"/>
-                                </Grid>
-                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center">服务器地址</TextBlock>
-                                    <TextBox Grid.Column="1" Text="{Binding CustomFrpConnectAddress}"/>
-                                </Grid>
-                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center">服务器端口</TextBlock>
-                                    <TextBox Grid.Column="1" Text="{Binding CustomFrpRemotePort}"/>
-                                </Grid>
-                                <Grid ColumnDefinitions="Auto, 1*" Margin="0,0,0,5">
-                                    <TextBlock Grid.Column="0" Margin="2,0,5,0" FontSize="16" VerticalAlignment="Center">服务器密钥</TextBlock>
-                                    <TextBox Grid.Column="1" Text="{Binding CustomFrpToken}"/>
-                                </Grid>
+                                <controls:OptionGrid Margin="0,0,0,5"
+                                                     LabelText="服务器名称"
+                                                     IsButtonVisible="False"
+                                                     TextBoxText="{Binding CustomFrpProxyName}"/>
+                                               
+                                <controls:OptionGrid Margin="0,0,0,5"
+                                                     LabelText="服务器地址"
+                                                     IsButtonVisible="False"
+                                                     TextBoxText="{Binding CustomFrpConnectAddress}"/>
+                                               
+                                <controls:OptionGrid Margin="0,0,0,5"
+                                                     LabelText="服务器端口"
+                                                     IsButtonVisible="False"
+                                                     TextBoxText="{Binding CustomFrpRemotePort}"/>
+                                               
+                                <controls:OptionGrid Margin="0,0,0,5"
+                                                     LabelText="服务器密钥"
+                                                     IsButtonVisible="False"
+                                                     TextBoxText="{Binding CustomFrpToken}"/>
                             </StackPanel>
                             <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpCustomFrpEditWindow_DoneCommand}">确定</Button>
                         </Grid>

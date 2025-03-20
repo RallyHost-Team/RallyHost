@@ -1,0 +1,51 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RallyHost.Controls"
+        xmlns:converters="clr-namespace:RallyHost.Converters"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+        x:Class="RallyHost.Controls.MessageWindow"
+        x:DataType="local:MessageWindow"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="InfoBrush" Color="#007BFF"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#FFC107"/>
+        <SolidColorBrush x:Key="ErrorBrush" Color="#DC3545"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="#28A745"/>
+        <SolidColorBrush x:Key="QuestionBrush" Color="#6C757D"/>
+    </Window.Resources>
+    
+    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *" Margin="0,0,0,15">
+            <PathIcon Grid.Column="0" Width="24" Height="24" Margin="0,0,15,0">
+                <PathIcon.Data>
+                    <MultiBinding Converter="{x:Static converters:MessageTypeConverters.Instance}">
+                        <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:MessageWindow}}"/>
+                    </MultiBinding>
+                </PathIcon.Data>
+                <PathIcon.Foreground>
+                    <MultiBinding Converter="{x:Static converters:MessageTypeToBrushConverter.Instance}">
+                        <Binding Path="Type" RelativeSource="{RelativeSource AncestorType={x:Type local:MessageWindow}}"/>
+                    </MultiBinding>
+                </PathIcon.Foreground>
+            </PathIcon>
+            <TextBlock Grid.Column="1" 
+                       Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type local:MessageWindow}}}" 
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </Grid>
+        
+        <TextBlock Grid.Row="1" Text="{Binding MessageText, RelativeSource={RelativeSource AncestorType={x:Type local:MessageWindow}}}"
+                   TextWrapping="Wrap"
+                   VerticalAlignment="Center"/>
+
+        <Button Grid.Row="2"
+                Content="确定"
+                HorizontalAlignment="Center"
+                Margin="0,15,0,0"
+                Click="CloseButton_Click"/>
+    </Grid>
+</Window>

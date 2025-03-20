@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RallyHost.Controls;
 using RallyHost.Helpers;
 using RallyHost.Models;
 using RallyHost.Models.CustomFrp;
@@ -75,7 +76,7 @@ public partial class SettingsViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(_config.OpenFrpAuthorization))
         {
-            await DialogHelper.ShowMessageAsync("Error", "Please input OpenFrp Token first!");
+            await DialogHelper.ShowMessageAsync("Error", "Please input OpenFrp Token first!", MessageType.Error);
             return;
         }
 
@@ -103,7 +104,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch proxy info: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch proxy info: {ex.Message}", MessageType.Error);
         }
     }
 
@@ -131,7 +132,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch user info: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch user info: {ex.Message}", MessageType.Error);
         }
     }
     
@@ -162,7 +163,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to update authorization: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to update authorization: {ex.Message}", MessageType.Error);
         }
     }
     
@@ -184,14 +185,14 @@ public partial class SettingsViewModel : ViewModelBase
         {
             if (string.IsNullOrWhiteSpace(CustomFrpConnectAddress))
             {
-                await DialogHelper.ShowMessageAsync("Error", "Server address is required!");
+                await DialogHelper.ShowMessageAsync("Error", "Server address is required!", MessageType.Error);
                 PopUpCustomFrpEditWindowIsOpen = false;
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(CustomFrpRemotePort))
             {
-                await DialogHelper.ShowMessageAsync("Error", "Server port is required!");
+                await DialogHelper.ShowMessageAsync("Error", "Server port is required!", MessageType.Error);
                 PopUpCustomFrpEditWindowIsOpen = false;
                 return;
             }
@@ -233,7 +234,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to save server: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to save server: {ex.Message}", MessageType.Error);
         }
     }
 
@@ -244,7 +245,7 @@ public partial class SettingsViewModel : ViewModelBase
         {
             if (string.IsNullOrEmpty(SelectedCustomFrpServer))
             {
-                await DialogHelper.ShowMessageAsync("Error", "Please select a server to edit");
+                await DialogHelper.ShowMessageAsync("Error", "Please select a server to edit", MessageType.Error);
                 return;
             }
 
@@ -261,7 +262,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to load server info: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to load server info: {ex.Message}", MessageType.Error);
         }
     }
 
@@ -272,7 +273,7 @@ public partial class SettingsViewModel : ViewModelBase
         {
             if (string.IsNullOrEmpty(SelectedCustomFrpServer))
             {
-                await DialogHelper.ShowMessageAsync("Error", "Please select a server to remove");
+                await DialogHelper.ShowMessageAsync("Error", "Please select a server to remove", MessageType.Error);
                 return;
             }
 
@@ -287,7 +288,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            await DialogHelper.ShowMessageAsync("Error", $"Failed to remove server: {ex.Message}");
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to remove server: {ex.Message}", MessageType.Error);
         }
     }
     

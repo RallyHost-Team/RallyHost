@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.Options;
+using RallyHost.Controls;
 using RallyHost.Helpers;
 using RallyHost.Models;
 using RallyHost.Models.Frpc;
@@ -67,7 +68,7 @@ namespace RallyHost.ViewModels
             }
             else
             {
-                await DialogHelper.ShowMessageAsync("Error", "请先选择一个配置文件!");
+                await DialogHelper.ShowMessageAsync("Error", "请先选择一个配置文件!", MessageType.Error);
             }
         }
         
