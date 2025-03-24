@@ -56,6 +56,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<HttpClient>();
         collection.AddSingleton<IOpenFrpService, OpenFrpService>();
         collection.AddSingleton<IFrpcService, FrpcService>();
+        collection.AddSingleton<InitService>();
         collection.AddTransient<Ping>();
         collection.AddSingleton<PingService>();
 

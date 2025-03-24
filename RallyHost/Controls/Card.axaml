@@ -1,0 +1,104 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:RallyHost.Controls"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+             x:Class="RallyHost.Controls.Card"
+             x:DataType="local:Card"
+             Margin="8">
+
+    <UserControl.Resources>
+        <ControlTheme x:Key="FluentCardBorder" TargetType="Border">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.25" Easing="CubicEaseOut" />
+                    <ThicknessTransition Property="BorderThickness" Duration="0:0:0.2" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+                    <BrushTransition Property="Background" Duration="0:0:0.2" />
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                </Transitions>
+            </Setter>
+        </ControlTheme>
+    </UserControl.Resources>
+
+    <Border Name="CardBorder"
+            CornerRadius="4"
+            Background="#FFFFFF"
+            BorderBrush="#E1E1E1"
+            BorderThickness="1"
+            BoxShadow="0 1.5 3.0 0 #12000000, 0 1.0 2.0 0 #10000000"
+            Padding="16"
+            ClipToBounds="False"
+            Theme="{StaticResource FluentCardBorder}"
+            Classes.elevated="{Binding IsPointerOver, RelativeSource={RelativeSource Self}}"
+            RenderTransform="scale(1.0)"
+            RenderTransformOrigin="50%,50%">
+
+        <Border.Styles>
+            <Style Selector="Border.elevated">
+                <Setter Property="BoxShadow" Value="0 4 12 0 #22000000, 0 2 6 0 #330078D4" />
+                <Setter Property="BorderBrush" Value="{Binding ThemeColor, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Background" Value="#FAFAFA" />
+                <Setter Property="RenderTransform" Value="scale(1.02)" />
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+
+            <Style Selector="Border:pointerdown">
+                <Setter Property="RenderTransform" Value="scale(0.98)" />
+                <Setter Property="BoxShadow" Value="0 1 3 0 #22000000, 0 1 2 0 #330078D4" />
+            </Style>
+        </Border.Styles>
+
+        <!-- Add entrance animation with opacity -->
+        <Border.Opacity>0</Border.Opacity>
+        <Border.Transitions>
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
+            </Transitions>
+        </Border.Transitions>
+
+        <Grid RowDefinitions="Auto,Auto,*">
+            <!-- Title area with theme color accent -->
+            <Panel Grid.Row="0" Margin="0,0,0,8" IsVisible="{Binding !!Title, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}">
+                <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}"
+                           FontWeight="SemiBold"
+                           FontSize="16"
+                           Foreground="#323130">
+                    <TextBlock.Transitions>
+                        <Transitions>
+                            <ThicknessTransition Property="Margin" Duration="0:0:0.2" />
+                        </Transitions>
+                    </TextBlock.Transitions>
+                </TextBlock>
+            </Panel>
+
+            <!-- Separator line with theme color accent and animation -->
+            <Border Grid.Row="1"
+                    Height="1"
+                    Background="{Binding ThemeColor, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}"
+                    Opacity="0.4"
+                    Margin="0,0,0,12"
+                    IsVisible="{Binding !!Title, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                        <DoubleTransition Property="Width" Duration="0:0:0.3" Easing="CubicEaseOut" />
+                    </Transitions>
+                </Border.Transitions>
+            </Border>
+
+            <!-- Content area with animation -->
+            <ContentPresenter Grid.Row="2"
+                              Content="{Binding CardContent, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}, FallbackValue={Binding Content, RelativeSource={RelativeSource AncestorType={x:Type local:Card}}}}"
+                              Margin="0,0,0,0">
+                <ContentPresenter.Transitions>
+                    <Transitions>
+                        <ThicknessTransition Property="Margin" Duration="0:0:0.2" />
+                    </Transitions>
+                </ContentPresenter.Transitions>
+            </ContentPresenter>
+        </Grid>
+    </Border>
+</UserControl>

@@ -3,6 +3,7 @@
              xmlns:vm="using:RallyHost.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:RallyHost.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RallyHost.Views.WelcomeView"
              x:DataType="vm:WelcomeViewModel">
@@ -13,7 +14,16 @@
     </Design.DataContext>
     <Border>
         <Grid RowDefinitions="1*, auto">
-            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="48">Welcome to RallyHost!</TextBlock>
+            <controls:Card Title="初始化 Frpc">
+                <controls:Card.CardContent>
+                    <StackPanel>
+                        <controls:OptionGrid LabelText="Frpc 初始化目录" TextBoxText="{Binding FrpcFolder}" ButtonText="..." ButtonCommand="{Binding SelectDirectoryCommand}" />
+                        <Button Command="{Binding InitFrpcCommand}">初始化 Frpc</Button>
+                        <ProgressBar Value="{Binding Progress}"></ProgressBar>
+                        <Button Command="{Binding CancelCommand}">Cancel</Button>
+                    </StackPanel>
+                </controls:Card.CardContent>
+            </controls:Card>
             <Grid Grid.Row="1" ColumnDefinitions="1*, Auto, Auto, 1*">
                 <TextBox Grid.Column="1" Watermark="Token" MinWidth="120" Margin="0,0,2,2" Text="{Binding OpenFrpAuthorization}"></TextBox>
                 <Button Grid.Column="2" HorizontalAlignment="Center" Command="{Binding TestOpenFrpCommand}">Test OpenFrp</Button>

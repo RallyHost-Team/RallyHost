@@ -55,7 +55,6 @@
                         Frp
                         </Expander.Header>
                         <StackPanel>
-                            <controls:OptionGrid LabelText="FrpcLocation" TextBoxText="{Binding FrpcLocation}" IsButtonVisible="True" ButtonText="Locate" />
                             <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
                             <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Authorization" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpOpenFrpWindow_AuthorizationInputCommand}"></Button>
