@@ -13,7 +13,6 @@ namespace RallyHost.Views
         {
             InitializeComponent();
             Instance = this;
-            
             //Adapt to OSX
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {

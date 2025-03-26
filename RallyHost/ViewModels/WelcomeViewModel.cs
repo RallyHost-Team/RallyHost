@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ICSharpCode.SharpZipLib.GZip;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RallyHost.Controls;
@@ -62,21 +63,31 @@ public partial class WelcomeViewModel : ViewModelBase
         }
         else
         {
+            bool successShown = false;
             try
             {
                 await _initService.DownloadLatestFrpc(FrpcFolder, async d =>
                 {
-                    if (d >= 100.0)
+                    if (d >= 100.0 && !successShown)
                     {
+                        successShown = true;
                         Progress = 0.0;
                         await DialogHelper.ShowMessageAsync("Success", "Frpc is initialized.", MessageType.Success);
                     }
                     Progress = d;
                 }, _cancellationTokenSource.Token);
             }
-            catch (OperationCanceledException e)
+            catch (GZipException)
             {
-                await DialogHelper.ShowMessageAsync("Info", $"Cancelled");
+                await DialogHelper.ShowMessageAsync("Error", "The downloaded file appears to be corrupted. Please try again.", MessageType.Error);
+            }
+            catch (OperationCanceledException)
+            {
+                await DialogHelper.ShowMessageAsync("Info", "Download cancelled");
+            }
+            catch (Exception ex)
+            {
+                await DialogHelper.ShowMessageAsync("Error", $"Failed to initialize Frpc: {ex.Message}", MessageType.Error);
             }
         }
         await _configWriter.SaveConfigAsync(nameof(Config), _config);
@@ -86,6 +97,7 @@ public partial class WelcomeViewModel : ViewModelBase
     public void Cancel()
     {
         _cancellationTokenSource?.Cancel();
+        Progress = 0.0;
     }
     
     [RelayCommand]

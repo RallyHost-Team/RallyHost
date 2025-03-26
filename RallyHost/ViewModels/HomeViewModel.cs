@@ -20,7 +20,7 @@ namespace RallyHost.ViewModels
         [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = false;
         [ObservableProperty] private ObservableCollection<Profile> _profiles;
         [ObservableProperty] private Profile _selectedProfile;
-
+        
         public HomeViewModel()
         {
 

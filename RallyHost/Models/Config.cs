@@ -11,5 +11,6 @@ public class Config {
     public List<ProxyInfo> OpenFrpServers { get; set; } = new();
     public List<Proxies> CustomFrpServers { get; set; } = new();
     public string? FrpcFolder { get; set; }
+    public string? Language { get; set; } = "English";
     public List<Profile> Profiles { get; set; }
 }

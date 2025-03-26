@@ -1,0 +1,92 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="SyncLink" xml:space="preserve">
+        <value>SyncLink</value>
+    </data>
+    <data name="Tittle" xml:space="preserve">
+        <value>RallyHost</value>
+    </data>
+    <data name="SettingsButton" xml:space="preserve">
+        <value>Settings</value>
+    </data>
+    <data name="ProfileName" xml:space="preserve">
+        <value>Profile Name</value>
+    </data>
+    <data name="LevelDirectory" xml:space="preserve">
+        <value>LevelDirectory</value>
+    </data>
+    <data name="HomeButton" xml:space="preserve">
+        <value>Home</value>
+    </data>
+    <data name="ConfirmButton" xml:space="preserve">
+        <value>Confirm</value>
+    </data>
+    <data name="AboutButton" xml:space="preserve">
+        <value>About</value>
+    </data>
+    <data name="OpenFrpAuthorizationInput" xml:space="preserve">
+        <value>Please enter OpenFrp Authorization:</value>
+    </data>
+    <data name="ProxyName" xml:space="preserve">
+        <value>Server Name</value>
+    </data>
+    <data name="RemotePort" xml:space="preserve">
+        <value>Server Port</value>
+    </data>
+    <data name="ConnectAddress" xml:space="preserve">
+        <value>Server Address</value>
+    </data>
+    <data name="FrpToken" xml:space="preserve">
+        <value>Token</value>
+    </data>
+    <data name="SyncExpander" xml:space="preserve">
+        <value>Sync</value>
+    </data>
+    <data name="OtherExpander" xml:space="preserve">
+        <value>Other</value>
+    </data>
+    <data name="FrpExpander" xml:space="preserve">
+        <value>Frp</value>
+    </data>
+    <data name="Language" xml:space="preserve">
+        <value>Language:</value>
+    </data>
+    <data name="UserInfoButton" xml:space="preserve">
+        <value>UserInfo</value>
+    </data>
+    <data name="PingButton" xml:space="preserve">
+        <value>Ping</value>
+    </data>
+    <data name="EditButton" xml:space="preserve">
+        <value>Edit</value>
+    </data>
+    <data name="AuthorizationInputButton" xml:space="preserve">
+        <value>Authorization</value>
+    </data>
+    <data name="AddBuuton" xml:space="preserve">
+        <value>Add</value>
+    </data>
+    <data name="RefreshButton" xml:space="preserve">
+        <value>Refresh</value>
+    </data>
+    <data name="RemoveButton" xml:space="preserve">
+        <value>Remove</value>
+    </data>
+    <data name="CustomFrp" xml:space="preserve">
+        <value>CustomFrp</value>
+    </data>
+    <data name="OpenFrp" xml:space="preserve">
+        <value>OpenFrp</value>
+    </data>
+</root>

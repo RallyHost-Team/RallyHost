@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:RallyHost.Controls"
+             xmlns:assets="clr-namespace:RallyHost.Assets"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="RallyHost.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
@@ -15,75 +16,68 @@
     <ScrollViewer>
             <Border>
                 <Grid RowDefinitions="Auto, Auto, Auto, Auto" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <Border Grid.RowSpan="1" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpOpenFrpAuthorizationInputWindowIsOpen}" IsEnabled="{Binding PopUpOpenFrpAuthorizationInputWindowIsOpen}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border Grid.RowSpan="1" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen}" IsEnabled="{Binding FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen}" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <Grid RowDefinitions="Auto">
                             <StackPanel>
-                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="OpenFrp Authorization:"/>
-                                <TextBox VerticalAlignment="Center" HorizontalAlignment="Center" PasswordChar="*" Watermark="Enter your Authorization" Width="420" Text="{Binding OpenFrpAuthorization}"/>
-                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="确定" Command="{Binding OpenFrp_AuthorizationInputDoneCommand}"/>
+                                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{I18N {x:Static assets:LangKeys.OpenFrpAuthorizationInput}}"/>
+                                <TextBox VerticalAlignment="Center" HorizontalAlignment="Center" PasswordChar="*" Width="420" Text="{Binding FrpSettings.OpenFrpAuthorization}"/>
+                                <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="{I18N {x:Static assets:LangKeys.ConfirmButton}}" Command="{Binding OpenFrp_AuthorizationInputDoneCommand}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
-                    <Border Grid.RowSpan="2" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding PopUpCustomFrpEditWindowIsOpen}" IsEnabled="{Binding PopUpCustomFrpEditWindowIsOpen}">
+                    <Border Grid.Row="0" Grid.RowSpan="2" Margin="20" Padding="10" CornerRadius="10" ZIndex="1" Opacity="0.9" Background="CornflowerBlue" IsVisible="{Binding FrpSettings.PopUpCustomFrpEditWindowIsOpen}" IsEnabled="{Binding FrpSettings.PopUpCustomFrpEditWindowIsOpen}">
                         <Grid RowDefinitions="1*, 40">
                             <StackPanel>
                                 <controls:OptionGrid Margin="0,0,0,5"
-                                                     LabelText="服务器名称"
+                                                     LabelText="{I18N {x:Static assets:LangKeys.ProxyName}}"
                                                      IsButtonVisible="False"
-                                                     TextBoxText="{Binding CustomFrpProxyName}"/>
+                                                     TextBoxText="{Binding FrpSettings.CustomFrpProxyName}"/>
                                                
                                 <controls:OptionGrid Margin="0,0,0,5"
-                                                     LabelText="服务器地址"
+                                                     LabelText="{I18N {x:Static assets:LangKeys.ConnectAddress}}"
                                                      IsButtonVisible="False"
-                                                     TextBoxText="{Binding CustomFrpConnectAddress}"/>
+                                                     TextBoxText="{Binding FrpSettings.CustomFrpConnectAddress}"/>
                                                
                                 <controls:OptionGrid Margin="0,0,0,5"
-                                                     LabelText="服务器端口"
+                                                     LabelText="{I18N {x:Static assets:LangKeys.RemotePort}}"
                                                      IsButtonVisible="False"
-                                                     TextBoxText="{Binding CustomFrpRemotePort}"/>
+                                                     TextBoxText="{Binding FrpSettings.CustomFrpRemotePort}"/>
                                                
                                 <controls:OptionGrid Margin="0,0,0,5"
-                                                     LabelText="服务器密钥"
+                                                     LabelText="{I18N {x:Static assets:LangKeys.FrpToken}}"
                                                      IsButtonVisible="False"
-                                                     TextBoxText="{Binding CustomFrpToken}"/>
+                                                     TextBoxText="{Binding FrpSettings.CustomFrpToken}"/>
                             </StackPanel>
-                            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Command="{Binding TogglePopUpCustomFrpEditWindow_DoneCommand}">确定</Button>
+                            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="White" Background="DarkSlateBlue" Content="{I18N {x:Static assets:LangKeys.ConfirmButton}}" Command="{Binding TogglePopUpCustomFrpEditWindow_DoneCommand}"/>
                         </Grid>
                     </Border>
-                    <Expander Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="FrpExpander" BorderThickness="0" Margin="5">
-                        <Expander.Header>
-                        Frp
-                        </Expander.Header>
+                    <Expander Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" Header="{I18N {x:Static assets:LangKeys.FrpExpander}}" x:Name="FrpExpander" BorderThickness="0" Margin="5">
                         <StackPanel>
                             <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="OpenFrp" VerticalAlignment="Center"></TextBlock>
-                            <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpToken" Content="Authorization" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpOpenFrpWindow_AuthorizationInputCommand}"></Button>
-                            <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpUserInfo" Content="UserInfo" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_GetUserInfoCommand}"></Button>
-                            <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpRefresh" Content="Refresh" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_RefreshCommand}"></Button>
-                            <Button Grid.Row="0" Grid.Column="4" Margin="5" Name="OpenFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_ServerPingCommand}"></Button>
-                            <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding OpenFrpServerHost}"></ListBox>
-                            <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="CustomFrp" VerticalAlignment="Center"></TextBlock>
-                            <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindow_AddCommand}"></Button>
-                            <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="Edit" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindowCommand}"></Button>
-                            <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpRemove" Content="Remove" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_RemoveSelectedServerCommand}"></Button>
-                            <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="Ping" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerPingCommand}"></Button>
-                            <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding CustomFrpServerHost}" SelectedItem="{Binding SelectedCustomFrpServer}"></ListBox>
-                        </Grid>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="{I18N {x:Static assets:LangKeys.OpenFrp}}" VerticalAlignment="Center"></TextBlock>
+                                <Button Grid.Row="0" Grid.Column="1" Margin="5" Name="OpenFrpAuthorization" Content="{I18N {x:Static assets:LangKeys.AuthorizationInputButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpOpenFrpWindow_AuthorizationInputCommand}"></Button>
+                                <Button Grid.Row="0" Grid.Column="2" Margin="5" Name="OpenFrpUserInfo" Content="{I18N {x:Static assets:LangKeys.UserInfoButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_GetUserInfoCommand}"></Button>
+                                <Button Grid.Row="0" Grid.Column="3" Margin="5" Name="OpenFrpRefresh" Content="{I18N {x:Static assets:LangKeys.RefreshButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_RefreshCommand}"></Button>
+                                <Button Grid.Row="0" Grid.Column="4" Margin="5" Name="OpenFrpPing" Content="{I18N {x:Static assets:LangKeys.PingButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding OpenFrp_ServerPingCommand}"></Button>
+                                <ListBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="OpenFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding FrpSettings.OpenFrpServersHost}"></ListBox>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Margin="1, 5, 1, 1" Name="CustomFrp" FontSize="18" FontWeight="Bold" Text="{I18N {x:Static assets:LangKeys.CustomFrp}}" VerticalAlignment="Center"></TextBlock>
+                                <Button Grid.Row="2" Grid.Column="1" Margin="5" Name="CustomFrpAdd" Content="{I18N {x:Static assets:LangKeys.AddBuuton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindow_AddCommand}"></Button>
+                                <Button Grid.Row="2" Grid.Column="2" Margin="5" Name="CustomFrpEdit" Content="{I18N {x:Static assets:LangKeys.EditButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding TogglePopUpCustomFrpEditWindowCommand}"></Button>
+                                <Button Grid.Row="2" Grid.Column="3" Margin="5" Name="CustomFrpRemove" Content="{I18N {x:Static assets:LangKeys.RemoveButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_RemoveSelectedServerCommand}"></Button>
+                                <Button Grid.Row="2" Grid.Column="4" Margin="5" Name="CustomFrpPing" Content="{I18N {x:Static assets:LangKeys.PingButton}}" HorizontalAlignment="Stretch" VerticalAlignment="Center" HorizontalContentAlignment="Center" Command="{Binding CustomFrp_ServerPingCommand}"></Button>
+                                <ListBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Margin="1, 1, 1, 1" Name="CustomFrpSelection" FontSize="18" FontWeight="Bold" SelectionMode="Single,Toggle" ItemsSource="{Binding FrpSettings.CustomFrpServersHost}" SelectedItem="{Binding FrpSettings.SelectedCustomFrpServer}"></ListBox>
+                            </Grid>
                         </StackPanel>
                     </Expander>
-                    <Expander Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
-                        <Expander.Header>
-                            Sync
-                        </Expander.Header>
+                    <Expander Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Header="{I18N {x:Static assets:LangKeys.SyncExpander}}" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
                         <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
                         </Grid>
                     </Expander>
-                    <Expander Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" x:Name="Other" BorderThickness="0" Margin="5">
-                        <Expander.Header>
-                            Other
-                        </Expander.Header>
-                        <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
-                        </Grid>
+                    <Expander Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" Header="{I18N {x:Static assets:LangKeys.OtherExpander}}" x:Name="Other" BorderThickness="0" Margin="5">
+                        <StackPanel Orientation="Vertical" Margin="10">
+                            <TextBlock Text="{I18N {x:Static assets:LangKeys.Language}}" Margin="0,0,0,5"/>
+                            <ComboBox ItemsSource="{Binding OtherSettings.LanguageOptions}" SelectedItem="{Binding OtherSettings.SelectedLanguage}"/>                        
+                        </StackPanel>
                     </Expander>
                 </Grid>
             </Border>

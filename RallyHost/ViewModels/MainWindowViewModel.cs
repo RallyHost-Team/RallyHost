@@ -14,7 +14,7 @@ namespace RallyHost.ViewModels
         private readonly WelcomeViewModel _welcomeViewModel;
         [ObservableProperty] private UserControl _currentView;
         [ObservableProperty] private string _currentViewName;
-
+        
         public MainWindowViewModel(HomeViewModel homeViewModel, SettingsViewModel settingsViewModel, WelcomeViewModel welcomeViewModel)
         {
             _homeViewModel = homeViewModel;

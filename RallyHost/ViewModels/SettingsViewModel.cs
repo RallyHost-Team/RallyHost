@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
+using System.Net.Mime;
+using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using RallyHost.Assets;
 using RallyHost.Controls;
 using RallyHost.Helpers;
 using RallyHost.Models;
@@ -20,57 +25,67 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly IOpenFrpService _openFrpService;
     private readonly Config _config;
     private readonly IConfigWriter _configWriter;
-    [ObservableProperty] private ObservableCollection<string> _openFrpServerHost;
-    [ObservableProperty] private ObservableCollection<string> _customFrpServerHost;
-    [ObservableProperty] private string? _frpcLocation;
-    [ObservableProperty] private string? _openFrpAuthorization;
-    [ObservableProperty] private string? _openFrpPingStatus = string.Empty;
-    [ObservableProperty] private string? _customFrpPingStatus = string.Empty;
-    [ObservableProperty] private string? _customFrpProxyName = string.Empty;
-    [ObservableProperty] private string? _customFrpConnectAddress = string.Empty;
-    [ObservableProperty] private string? _customFrpRemotePort = string.Empty;
-    [ObservableProperty] private string? _customFrpToken = string.Empty;
-    [ObservableProperty] private string? _selectedCustomFrpServer;
-    [ObservableProperty] private bool _popUpOpenFrpAuthorizationInputWindowIsOpen;
-    [ObservableProperty] private bool _popUpCustomFrpEditWindowIsOpen;
-    
-    // DON'T REMOVE THIS
-    // PREVIEW DOESN'T WORK WITHOUT THIS
+    [ObservableProperty] private FrpSettings _frpSettings = new();
+    [ObservableProperty] private SyncSettings _syncSettings = new();
+    [ObservableProperty] private OtherSettings _otherSettings = new();
+
     public SettingsViewModel()
     {
-        
     }
+
     public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
     {
         _pingService = pingService;
         _openFrpService = openFrpService;
         _config = config.Value;
         _configWriter = configWriter;
-        _openFrpAuthorization = _config.OpenFrpAuthorization;
+
+        OtherSettings = new OtherSettings
+        {
+            LanguageOptions = new ObservableCollection<string> { "English", "简体中文" },
+            // 如果配置中没有语言设置，默认使用 English
+            SelectedLanguage = _config.Language ?? "English"
+        };
+
+        // 确保配置文件中保存了默认语言
+        if (_config.Language == null)
+        {
+            _config.Language = "English";
+            _configWriter.SaveConfigAsync(nameof(Config), _config).ConfigureAwait(false);
+        }
+
+        OtherSettings.PropertyChanged += async (sender, args) =>
+        {
+            if (args.PropertyName == nameof(OtherSettings.SelectedLanguage))
+            {
+                await ChangeLanguage();
+            }
+        };
         
-        _openFrpServerHost = new ObservableCollection<string>(
+        FrpSettings.OpenFrpAuthorization = _config.OpenFrpAuthorization;
+        FrpSettings.OpenFrpServersHost = new ObservableCollection<string>(
             _config.OpenFrpServers.Select(s => s.FriendlyNode ?? string.Empty)
                 .Where(n => !string.IsNullOrEmpty(n))
                 .Distinct());
-        
-        _customFrpServerHost = new ObservableCollection<string>(
-            _config.CustomFrpServers.Select(s => 
+
+        FrpSettings.CustomFrpServersHost = new ObservableCollection<string>(
+            _config.CustomFrpServers.Select(s =>
                 !string.IsNullOrEmpty(s.ProxyName) ? s.ProxyName : s.ConnectAddress)!);
     }
-    
+
     [RelayCommand]
     public async Task InitializeSettings()
     {
         await OpenFrp_ServerPing();
         await CustomFrp_ServerPing();
     }
-    
+
     [RelayCommand]
     public void TogglePopUpOpenFrpWindow_AuthorizationInput()
     {
-        PopUpOpenFrpAuthorizationInputWindowIsOpen = !PopUpOpenFrpAuthorizationInputWindowIsOpen;
+        FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen = !FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen;
     }
-    
+
     [RelayCommand]
     public async Task OpenFrp_Refresh()
     {
@@ -85,7 +100,7 @@ public partial class SettingsViewModel : ViewModelBase
             var response = await _openFrpService.GetUserProxiesAsync();
             if (response.List != null)
             {
-                OpenFrpServerHost.Clear();
+                FrpSettings.OpenFrpServersHost.Clear();
                 _config.OpenFrpServers = response.List;
 
                 var friendlyNodes = response.List
@@ -95,7 +110,7 @@ public partial class SettingsViewModel : ViewModelBase
 
                 foreach (var node in friendlyNodes)
                 {
-                    OpenFrpServerHost.Add(node!);
+                    FrpSettings.OpenFrpServersHost.Add(node!);
                 }
 
                 await _configWriter.SaveConfigAsync(nameof(Config), _config);
@@ -124,9 +139,7 @@ public partial class SettingsViewModel : ViewModelBase
             {
                 _config.OpenFrpUserInfo.Clear();
                 _config.OpenFrpUserInfo.Add(userInfo);
-            
                 await _configWriter.SaveConfigAsync(nameof(Config), _config);
-            
                 await DialogHelper.ShowMessageAsync("User Info", JsonConvert.SerializeObject(userInfo, Formatting.Indented));
             }
         }
@@ -135,20 +148,20 @@ public partial class SettingsViewModel : ViewModelBase
             await DialogHelper.ShowMessageAsync("Error", $"Failed to fetch user info: {ex.Message}", MessageType.Error);
         }
     }
-    
+
     [RelayCommand]
     public async Task OpenFrp_AuthorizationInputDone()
     {
         try
         {
-            if (_config.OpenFrpAuthorization != OpenFrpAuthorization)
+            if (_config.OpenFrpAuthorization != FrpSettings.OpenFrpAuthorization)
             {
                 _config.OpenFrpServers.Clear();
-                OpenFrpServerHost.Clear();
+                FrpSettings.OpenFrpServersHost.Clear();
             }
 
-            PopUpOpenFrpAuthorizationInputWindowIsOpen = false;
-            _config.OpenFrpAuthorization = OpenFrpAuthorization;
+            FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen = false;
+            _config.OpenFrpAuthorization = FrpSettings.OpenFrpAuthorization;
             await _configWriter.SaveConfigAsync(nameof(Config), _config);
 
             var userInfo = await _openFrpService.GetUserInfoAsync();
@@ -166,16 +179,16 @@ public partial class SettingsViewModel : ViewModelBase
             await DialogHelper.ShowMessageAsync("Error", $"Failed to update authorization: {ex.Message}", MessageType.Error);
         }
     }
-    
+
     [RelayCommand]
     public void TogglePopUpCustomFrpEditWindow_Add()
     {
-        CustomFrpProxyName = string.Empty;
-        CustomFrpConnectAddress = string.Empty;
-        CustomFrpRemotePort = string.Empty;
-        CustomFrpToken = string.Empty;
-        SelectedCustomFrpServer = null;
-        PopUpCustomFrpEditWindowIsOpen = true;
+        FrpSettings.CustomFrpProxyName = string.Empty;
+        FrpSettings.CustomFrpConnectAddress = string.Empty;
+        FrpSettings.CustomFrpRemotePort = string.Empty;
+        FrpSettings.CustomFrpToken = string.Empty;
+        FrpSettings.SelectedCustomFrpServer = null;
+        FrpSettings.PopUpCustomFrpEditWindowIsOpen = true;
     }
 
     [RelayCommand]
@@ -183,52 +196,52 @@ public partial class SettingsViewModel : ViewModelBase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(CustomFrpConnectAddress))
+            if (string.IsNullOrWhiteSpace(FrpSettings.CustomFrpConnectAddress))
             {
                 await DialogHelper.ShowMessageAsync("Error", "Server address is required!", MessageType.Error);
-                PopUpCustomFrpEditWindowIsOpen = false;
+                FrpSettings.PopUpCustomFrpEditWindowIsOpen = false;
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(CustomFrpRemotePort))
+            if (string.IsNullOrWhiteSpace(FrpSettings.CustomFrpRemotePort))
             {
                 await DialogHelper.ShowMessageAsync("Error", "Server port is required!", MessageType.Error);
-                PopUpCustomFrpEditWindowIsOpen = false;
+                FrpSettings.PopUpCustomFrpEditWindowIsOpen = false;
                 return;
             }
-            
+
             var server = new Proxies
             {
-                ProxyName = CustomFrpProxyName,
-                ConnectAddress = CustomFrpConnectAddress,
-                RemotePort = CustomFrpRemotePort,
-                Token = CustomFrpToken
+                ProxyName = FrpSettings.CustomFrpProxyName,
+                ConnectAddress = FrpSettings.CustomFrpConnectAddress,
+                RemotePort = FrpSettings.CustomFrpRemotePort,
+                Token = FrpSettings.CustomFrpToken
             };
-            
-            if (!string.IsNullOrEmpty(SelectedCustomFrpServer))
+
+            if (!string.IsNullOrEmpty(FrpSettings.SelectedCustomFrpServer))
             {
-                var selectedIndex = CustomFrpServerHost.IndexOf(SelectedCustomFrpServer);
+                var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
                 if (selectedIndex >= 0)
                 {
                     _config.CustomFrpServers[selectedIndex] = server;
-                    CustomFrpServerHost[selectedIndex] = !string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress;
+                    FrpSettings.CustomFrpServersHost[selectedIndex] = !string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress;
                 }
             }
             else
             {
                 _config.CustomFrpServers.Add(server);
-                CustomFrpServerHost.Add(!string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress);
+                FrpSettings.CustomFrpServersHost.Add(!string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress);
             }
 
             await _configWriter.SaveConfigAsync(nameof(Config), _config);
-            
-            CustomFrpProxyName = string.Empty;
-            CustomFrpConnectAddress = string.Empty;
-            CustomFrpRemotePort = string.Empty;
-            CustomFrpToken = string.Empty;
-            SelectedCustomFrpServer = null;
 
-            PopUpCustomFrpEditWindowIsOpen = false;
+            FrpSettings.CustomFrpProxyName = string.Empty;
+            FrpSettings.CustomFrpConnectAddress = string.Empty;
+            FrpSettings.CustomFrpRemotePort = string.Empty;
+            FrpSettings.CustomFrpToken = string.Empty;
+            FrpSettings.SelectedCustomFrpServer = null;
+
+            FrpSettings.PopUpCustomFrpEditWindowIsOpen = false;
 
             await CustomFrp_ServerPing();
         }
@@ -243,21 +256,21 @@ public partial class SettingsViewModel : ViewModelBase
     {
         try
         {
-            if (string.IsNullOrEmpty(SelectedCustomFrpServer))
+            if (string.IsNullOrEmpty(FrpSettings.SelectedCustomFrpServer))
             {
                 await DialogHelper.ShowMessageAsync("Error", "Please select a server to edit", MessageType.Error);
                 return;
             }
 
-            var selectedIndex = CustomFrpServerHost.IndexOf(SelectedCustomFrpServer);
+            var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
             if (selectedIndex >= 0)
             {
                 var server = _config.CustomFrpServers[selectedIndex];
-                CustomFrpProxyName = server.ProxyName;
-                CustomFrpConnectAddress = server.ConnectAddress;
-                CustomFrpRemotePort = server.RemotePort;
-                CustomFrpToken = server.Token;
-                PopUpCustomFrpEditWindowIsOpen = true;
+                FrpSettings.CustomFrpProxyName = server.ProxyName;
+                FrpSettings.CustomFrpConnectAddress = server.ConnectAddress;
+                FrpSettings.CustomFrpRemotePort = server.RemotePort;
+                FrpSettings.CustomFrpToken = server.Token;
+                FrpSettings.PopUpCustomFrpEditWindowIsOpen = true;
             }
         }
         catch (Exception ex)
@@ -271,19 +284,19 @@ public partial class SettingsViewModel : ViewModelBase
     {
         try
         {
-            if (string.IsNullOrEmpty(SelectedCustomFrpServer))
+            if (string.IsNullOrEmpty(FrpSettings.SelectedCustomFrpServer))
             {
                 await DialogHelper.ShowMessageAsync("Error", "Please select a server to remove", MessageType.Error);
                 return;
             }
 
-            var selectedIndex = CustomFrpServerHost.IndexOf(SelectedCustomFrpServer);
+            var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
             if (selectedIndex >= 0)
             {
                 _config.CustomFrpServers.RemoveAt(selectedIndex);
-                CustomFrpServerHost.RemoveAt(selectedIndex);
+                FrpSettings.CustomFrpServersHost.RemoveAt(selectedIndex);
                 await _configWriter.SaveConfigAsync(nameof(Config), _config);
-                SelectedCustomFrpServer = null;
+                FrpSettings.SelectedCustomFrpServer = null;
             }
         }
         catch (Exception ex)
@@ -291,19 +304,19 @@ public partial class SettingsViewModel : ViewModelBase
             await DialogHelper.ShowMessageAsync("Error", $"Failed to remove server: {ex.Message}", MessageType.Error);
         }
     }
-    
+
     [RelayCommand]
     public async Task CustomFrp_ServerPing()
     {
         await PingServers(false);
     }
-    
+
     private async Task PingServers(bool isOpenFrp)
     {
         try
         {
-            var collection = isOpenFrp ? OpenFrpServerHost : CustomFrpServerHost;
-        
+            var collection = isOpenFrp ? FrpSettings.OpenFrpServersHost : FrpSettings.CustomFrpServersHost;
+
             for (int i = 0; i < collection.Count; ++i)
             {
                 var host = collection[i];
@@ -341,7 +354,33 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception)
         {
-            // ignored
+            
+        }
+    }
+    
+    [RelayCommand]
+    private async Task ChangeLanguage()
+    {
+        try
+        {
+            var culture = OtherSettings.SelectedLanguage switch
+            {
+                "English" => new CultureInfo("en"),
+                "简体中文" => new CultureInfo("zh-hans"),
+                _ => new CultureInfo("en")
+            };
+            
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                I18NExtension.Culture = culture;
+            });
+
+            _config.Language = OtherSettings.SelectedLanguage;
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+        }
+        catch (Exception ex)
+        {
+            await DialogHelper.ShowMessageAsync("Error", $"Failed to change language: {ex.Message}", MessageType.Error);
         }
     }
 }
