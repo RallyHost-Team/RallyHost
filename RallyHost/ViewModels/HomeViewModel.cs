@@ -17,39 +17,50 @@ namespace RallyHost.ViewModels
     {
         private readonly Config _config;
         private readonly IConfigWriter _configWriter;
+        private readonly IFrpcConfigService _frpcConfigService;
+        private readonly IFrpcService _frpcService;
         [ObservableProperty] private bool _popUpProfileEditWindowIsOpen = false;
         [ObservableProperty] private ObservableCollection<Profile> _profiles;
-        [ObservableProperty] private Profile _selectedProfile;
+        [ObservableProperty] private Profile? _selectedProfile;
         
         public HomeViewModel()
         {
 
         }
-        public HomeViewModel(IOptions<Config> config, IConfigWriter configWriter)
+        public HomeViewModel(IOptions<Config> config, IConfigWriter configWriter, IFrpcConfigService frpcConfigService, IFrpcService frpcService)
         {
             _config = config.Value;
             _configWriter = configWriter;
-            _profiles = new ObservableCollection<Profile>(_config.Profiles);
+            _profiles = new ObservableCollection<Profile>(_config.Profiles!);
+            _frpcConfigService = frpcConfigService;
+            _frpcService = frpcService;
             SelectedProfile = Profiles.FirstOrDefault();
             
             WeakReferenceMessenger.Default.Register<FrpcStatusMessage>(this, (r, m) =>
             {
+                DialogHelper.ShowMessageAsync("Info", m.Value.message);
                 // Todo: Handle FrpcStatusMessage
             });
         }
 
+        [RelayCommand]
+        public async Task Start()
+        {
+            await _frpcService.StartFrpcProcessWithStatusMessenger();
+        }
+        
         [RelayCommand]
         public async Task SelectDirectory()
         {
             var path = await DialogHelper.SelectFolderAsync();
             if (path != null)
             {
-                SelectedProfile.LevelDirectory = path;
+                SelectedProfile!.LevelDirectory = path;
             }
         }
 
         [RelayCommand]
-        public async Task TogglePopUpProfileEditWindow_Done()
+        public void TogglePopUpProfileEditWindow_Done()
         {
             PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
         }
@@ -64,6 +75,7 @@ namespace RallyHost.ViewModels
                     Profiles.Remove(SelectedProfile);
                 }
                 PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+                _config.Profiles = Profiles.ToList();
                 await _configWriter.SaveConfigAsync(nameof(Config), _config);
             }
             else
@@ -84,14 +96,16 @@ namespace RallyHost.ViewModels
             Profiles.Add(profile);
             SelectedProfile = profile;
             PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+            _config.Profiles = Profiles.ToList();
             await _configWriter.SaveConfigAsync(nameof(Config), _config);
         }
 
         [RelayCommand]
         public async Task RemoveSelectedProfile()
         {
-            Profiles.Remove(SelectedProfile);
+            Profiles.Remove(SelectedProfile!);
             SelectedProfile = Profiles.FirstOrDefault();
+            _config.Profiles = Profiles.ToList();
             await _configWriter.SaveConfigAsync(nameof(Config), _config);
         }
 

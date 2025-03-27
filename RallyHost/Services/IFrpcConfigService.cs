@@ -6,5 +6,6 @@ namespace RallyHost.Services;
 
 public interface IFrpcConfigService
 {
+    public Task ApplyConfig(FrpcConfig frpcConfig);
     public Task AddConfig(FrpcConfig frpcConfig);
 }

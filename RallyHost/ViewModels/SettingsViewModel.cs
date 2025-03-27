@@ -2,19 +2,17 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Mime;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using RallyHost.Assets;
 using RallyHost.Controls;
 using RallyHost.Helpers;
 using RallyHost.Models;
 using RallyHost.Models.CustomFrp;
+using RallyHost.Models.Frpc;
 using RallyHost.Services;
 
 namespace RallyHost.ViewModels;
@@ -24,6 +22,7 @@ public partial class SettingsViewModel : ViewModelBase
     private readonly PingService _pingService;
     private readonly IOpenFrpService _openFrpService;
     private readonly Config _config;
+    private readonly FrpcConfigs _frpcConfigs;
     private readonly IConfigWriter _configWriter;
     [ObservableProperty] private FrpSettings _frpSettings = new();
     [ObservableProperty] private SyncSettings _syncSettings = new();
@@ -33,11 +32,12 @@ public partial class SettingsViewModel : ViewModelBase
     {
     }
 
-    public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config)
+    public SettingsViewModel(PingService pingService, IConfigWriter configWriter, IOpenFrpService openFrpService, IOptions<Config> config, IOptions<FrpcConfigs> frpcConfigs)
     {
         _pingService = pingService;
         _openFrpService = openFrpService;
         _config = config.Value;
+        _frpcConfigs = frpcConfigs.Value;
         _configWriter = configWriter;
 
         OtherSettings = new OtherSettings
@@ -54,7 +54,7 @@ public partial class SettingsViewModel : ViewModelBase
             _configWriter.SaveConfigAsync(nameof(Config), _config).ConfigureAwait(false);
         }
 
-        OtherSettings.PropertyChanged += async (sender, args) =>
+        OtherSettings.PropertyChanged += async (_, args) =>
         {
             if (args.PropertyName == nameof(OtherSettings.SelectedLanguage))
             {
@@ -63,14 +63,20 @@ public partial class SettingsViewModel : ViewModelBase
         };
         
         FrpSettings.OpenFrpAuthorization = _config.OpenFrpAuthorization;
-        FrpSettings.OpenFrpServersHost = new ObservableCollection<string>(
-            _config.OpenFrpServers.Select(s => s.FriendlyNode ?? string.Empty)
-                .Where(n => !string.IsNullOrEmpty(n))
-                .Distinct());
+        if (_frpcConfigs.OpenFrpServers is not null)
+        {
+            FrpSettings.OpenFrpServersHost = new ObservableCollection<string>(
+                _frpcConfigs.OpenFrpServers.Select(s => s.FriendlyNode ?? string.Empty)
+                    .Where(n => !string.IsNullOrEmpty(n))
+                    .Distinct());
+        }
 
-        FrpSettings.CustomFrpServersHost = new ObservableCollection<string>(
-            _config.CustomFrpServers.Select(s =>
-                !string.IsNullOrEmpty(s.ProxyName) ? s.ProxyName : s.ConnectAddress)!);
+        if (_frpcConfigs.CustomFrpServers is not null)
+        {
+            FrpSettings.CustomFrpServersHost = new ObservableCollection<string>(
+                _frpcConfigs.CustomFrpServers.Select(s =>
+                    !string.IsNullOrEmpty(s.ProxyName) ? s.ProxyName : s.ConnectAddress)!);
+        }
     }
 
     [RelayCommand]
@@ -101,7 +107,7 @@ public partial class SettingsViewModel : ViewModelBase
             if (response.List != null)
             {
                 FrpSettings.OpenFrpServersHost.Clear();
-                _config.OpenFrpServers = response.List;
+                _frpcConfigs.OpenFrpServers = response.List;
 
                 var friendlyNodes = response.List
                     .Select(p => p.FriendlyNode)
@@ -113,7 +119,7 @@ public partial class SettingsViewModel : ViewModelBase
                     FrpSettings.OpenFrpServersHost.Add(node!);
                 }
 
-                await _configWriter.SaveConfigAsync(nameof(Config), _config);
+                await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
                 await OpenFrp_ServerPing();
             }
         }
@@ -135,13 +141,11 @@ public partial class SettingsViewModel : ViewModelBase
         try
         {
             var userInfo = await _openFrpService.GetUserInfoAsync();
-            if (userInfo != null)
-            {
-                _config.OpenFrpUserInfo.Clear();
-                _config.OpenFrpUserInfo.Add(userInfo);
-                await _configWriter.SaveConfigAsync(nameof(Config), _config);
-                await DialogHelper.ShowMessageAsync("User Info", JsonConvert.SerializeObject(userInfo, Formatting.Indented));
-            }
+            _frpcConfigs.OpenFrpUserInfos ??= [];
+            _frpcConfigs.OpenFrpUserInfos.Clear();
+            _frpcConfigs.OpenFrpUserInfos.Add(userInfo);
+            await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
+            await DialogHelper.ShowMessageAsync("User Info", JsonConvert.SerializeObject(userInfo, Formatting.Indented));
         }
         catch (Exception ex)
         {
@@ -156,21 +160,22 @@ public partial class SettingsViewModel : ViewModelBase
         {
             if (_config.OpenFrpAuthorization != FrpSettings.OpenFrpAuthorization)
             {
-                _config.OpenFrpServers.Clear();
-                FrpSettings.OpenFrpServersHost.Clear();
+                if (_frpcConfigs.OpenFrpServers is not null)
+                {
+                    _frpcConfigs.OpenFrpServers.Clear();
+                    FrpSettings.OpenFrpServersHost.Clear();
+                }
             }
 
             FrpSettings.PopUpOpenFrpAuthorizationInputWindowIsOpen = false;
             _config.OpenFrpAuthorization = FrpSettings.OpenFrpAuthorization;
-            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+            await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
 
             var userInfo = await _openFrpService.GetUserInfoAsync();
-            if (userInfo != null)
-            {
-                _config.OpenFrpUserInfo.Clear();
-                _config.OpenFrpUserInfo.Add(userInfo);
-                await _configWriter.SaveConfigAsync(nameof(Config), _config);
-            }
+            _frpcConfigs.OpenFrpUserInfos ??= [];
+            _frpcConfigs.OpenFrpUserInfos.Clear();
+            _frpcConfigs.OpenFrpUserInfos.Add(userInfo);
+            await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
 
             await OpenFrp_Refresh();
         }
@@ -223,17 +228,19 @@ public partial class SettingsViewModel : ViewModelBase
                 var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
                 if (selectedIndex >= 0)
                 {
-                    _config.CustomFrpServers[selectedIndex] = server;
+                    _frpcConfigs.CustomFrpServers ??= [];
+                    _frpcConfigs.CustomFrpServers[selectedIndex] = server;
                     FrpSettings.CustomFrpServersHost[selectedIndex] = !string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress;
                 }
             }
             else
             {
-                _config.CustomFrpServers.Add(server);
+                _frpcConfigs.CustomFrpServers ??= [];
+                _frpcConfigs.CustomFrpServers.Add(server);
                 FrpSettings.CustomFrpServersHost.Add(!string.IsNullOrEmpty(server.ProxyName) ? server.ProxyName : server.ConnectAddress);
             }
 
-            await _configWriter.SaveConfigAsync(nameof(Config), _config);
+            await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
 
             FrpSettings.CustomFrpProxyName = string.Empty;
             FrpSettings.CustomFrpConnectAddress = string.Empty;
@@ -265,7 +272,8 @@ public partial class SettingsViewModel : ViewModelBase
             var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
             if (selectedIndex >= 0)
             {
-                var server = _config.CustomFrpServers[selectedIndex];
+                _frpcConfigs.CustomFrpServers ??= [];
+                var server = _frpcConfigs.CustomFrpServers[selectedIndex];
                 FrpSettings.CustomFrpProxyName = server.ProxyName;
                 FrpSettings.CustomFrpConnectAddress = server.ConnectAddress;
                 FrpSettings.CustomFrpRemotePort = server.RemotePort;
@@ -293,9 +301,10 @@ public partial class SettingsViewModel : ViewModelBase
             var selectedIndex = FrpSettings.CustomFrpServersHost.IndexOf(FrpSettings.SelectedCustomFrpServer);
             if (selectedIndex >= 0)
             {
-                _config.CustomFrpServers.RemoveAt(selectedIndex);
+                _frpcConfigs.CustomFrpServers ??= [];
+                _frpcConfigs.CustomFrpServers.RemoveAt(selectedIndex);
                 FrpSettings.CustomFrpServersHost.RemoveAt(selectedIndex);
-                await _configWriter.SaveConfigAsync(nameof(Config), _config);
+                await _configWriter.SaveConfigAsync(nameof(FrpcConfigs), _frpcConfigs);
                 FrpSettings.SelectedCustomFrpServer = null;
             }
         }
@@ -329,14 +338,14 @@ public partial class SettingsViewModel : ViewModelBase
                 string? address;
                 if (isOpenFrp)
                 {
-                    address = _config.OpenFrpServers
+                    address = _frpcConfigs.OpenFrpServers?
                         .Where(p => p.FriendlyNode == host && !string.IsNullOrEmpty(p.ConnectAddress))
                         .Select(p => p.ConnectAddress?.Split(':')[0])
                         .FirstOrDefault();
                 }
                 else
                 {
-                    address = _config.CustomFrpServers
+                    address = _frpcConfigs.CustomFrpServers?
                         .Where(p => (!string.IsNullOrEmpty(p.ProxyName) ? p.ProxyName : p.ConnectAddress) == host)
                         .Select(p => p.ConnectAddress)
                         .FirstOrDefault();
@@ -354,7 +363,7 @@ public partial class SettingsViewModel : ViewModelBase
         }
         catch (Exception)
         {
-            
+            // ignored
         }
     }
     

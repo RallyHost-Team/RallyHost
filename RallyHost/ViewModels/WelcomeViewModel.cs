@@ -46,6 +46,8 @@ public partial class WelcomeViewModel : ViewModelBase
         if (path != null)
         {
             FrpcFolder = path;
+            _config.FrpcFolder = path;
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
         }
     }
     

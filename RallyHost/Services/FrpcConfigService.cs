@@ -13,8 +13,8 @@ public class FrpcConfigService : IFrpcConfigService
 {
     private readonly Config _config;
     private readonly FrpcConfigs _frpcConfigs;
-    private readonly ConfigWriter _configWriter;
-    public FrpcConfigService(IOptions<Config> config, IOptions<FrpcConfigs> frpcConfigs, ConfigWriter configWriter)
+    private readonly IConfigWriter _configWriter;
+    public FrpcConfigService(IOptions<Config> config, IOptions<FrpcConfigs> frpcConfigs, IConfigWriter configWriter)
     {
         _config = config.Value;
         _frpcConfigs = frpcConfigs.Value;

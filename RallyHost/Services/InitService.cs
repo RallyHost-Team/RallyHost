@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using CliWrap;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using Newtonsoft.Json.Linq;
@@ -155,7 +156,14 @@ namespace RallyHost.Services
 
                 var destinationFile = Path.Combine(finalPath, Path.GetFileName(frpcFile));
                 File.Move(frpcFile, destinationFile, true);
-
+                
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    await Cli.Wrap("chmod")
+                        .WithArguments("+x " + destinationFile)
+                        .ExecuteAsync(cancellationToken);
+                }
+                
                 Directory.Delete(tempExtractPath, true);
                 tempExtractPath = string.Empty;
 

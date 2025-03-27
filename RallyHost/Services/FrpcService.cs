@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CliWrap;
 using CliWrap.Buffered;
 using CommunityToolkit.Mvvm.Messaging;
@@ -56,7 +57,10 @@ public class FrpcService : IFrpcService
         return await StartFrpcProcessAsync((output) =>
         {
             var status = FrpcStatus.FromLog(output);
-            WeakReferenceMessenger.Default.Send(new FrpcStatusMessage(status));
+
+            Dispatcher.UIThread.Post(() => { 
+                WeakReferenceMessenger.Default.Send(new FrpcStatusMessage(status));
+            });
         });
     }
     

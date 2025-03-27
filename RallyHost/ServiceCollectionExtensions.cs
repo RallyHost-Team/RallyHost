@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using RallyHost.Models;
 using RallyHost.ViewModels;
@@ -7,9 +8,11 @@ using System.Net.Http;
 using System.Reflection;
 using Newtonsoft.Json;
 using RallyHost.Services;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Net.NetworkInformation;
+using Newtonsoft.Json.Linq;
+using RallyHost.Models.CustomFrp;
 using RallyHost.Models.Frpc;
+using RallyHost.Models.OpenFrp;
 
 namespace RallyHost;
 
@@ -21,31 +24,41 @@ public static class ServiceCollectionExtensions
         var configPath = $"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}/config.json";
         if (!File.Exists(configPath))
         {
-            File.WriteAllText(configPath, """
-                                          {
-                                            "Config": {
-                                              "PlayerName": "",
-                                              "OpenFrpToken": "",
-                                              "FrpcLocation": "",
-                                              "Profiles": [
-                                                {
-                                                    "Name": "Default",
-                                                    "LevelDirectory": null,
-                                                    "SyncLink": ""
-                                                }
-                                              ]
-                                            },
-                                            "FrpcConfigs": {
-                                              "Configs": [],
-                                              "AppliedConfig": null
-                                            }
-                                          }
-                                          """);
+            var configJObject = JObject.FromObject(new Config()
+            {
+                FrpcFolder = "",
+                OpenFrpAuthorization = "",
+                PlayerName = "",
+                Language = "English",
+                Profiles = new List<Profile>()
+                {
+                    new Profile()
+                    {
+                        Name = "Default",
+                        LevelDirectory = "",
+                        SyncLink = ""
+                    }
+                }
+            });
+            var frpcConfigsJObject = JObject.FromObject(new FrpcConfigs()
+            {
+                Configs = new List<FrpcConfig>(),
+                AppliedConfig = new FrpcConfig(),
+                CustomFrpServers = new List<Proxies>(),
+                OpenFrpServers = new List<ProxyInfo>(),
+                OpenFrpUserInfos = new List<UserInfo>()
+            });
+            var jObject = new JObject
+            {
+                {nameof(Config), configJObject},
+                {nameof(FrpcConfigs), frpcConfigsJObject}
+            };
+            File.WriteAllText(configPath, jObject.ToString(Formatting.Indented));
         }
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!)
-            .AddJsonFile("config.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("config.json", optional: true, reloadOnChange: true)
             .Build();
         collection.AddOptions();
         collection.Configure<Config>(configuration.GetSection(nameof(Config))); 
@@ -56,6 +69,7 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<HttpClient>();
         collection.AddSingleton<IOpenFrpService, OpenFrpService>();
         collection.AddSingleton<IFrpcService, FrpcService>();
+        collection.AddSingleton<IFrpcConfigService, FrpcConfigService>();
         collection.AddSingleton<InitService>();
         collection.AddTransient<Ping>();
         collection.AddSingleton<PingService>();

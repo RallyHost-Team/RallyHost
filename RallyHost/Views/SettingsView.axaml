@@ -52,6 +52,16 @@
                         </Grid>
                     </Border>
                     <Expander Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" Header="{I18N {x:Static assets:LangKeys.FrpExpander}}" x:Name="FrpExpander" BorderThickness="0" Margin="5">
+                        <Expander.RenderTransform>
+                            <TranslateTransform Y="-50"/>
+                        </Expander.RenderTransform>
+                        <Expander.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.5"/>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.6" Easing="CubicEaseOut"/>
+                            </Transitions>
+                        </Expander.Transitions>
+                        <Expander.Opacity>0</Expander.Opacity>
                         <StackPanel>
                             <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="*, *, *, *, *" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                 <TextBlock Grid.Row="0" Grid.Column="0" Margin="1, 5, 1, 1" Name="OpenFrp" FontSize="18" FontWeight="Bold" Text="{I18N {x:Static assets:LangKeys.OpenFrp}}" VerticalAlignment="Center"></TextBlock>
@@ -70,10 +80,30 @@
                         </StackPanel>
                     </Expander>
                     <Expander Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Header="{I18N {x:Static assets:LangKeys.SyncExpander}}" FontSize="16" x:Name="SyncExpander" BorderThickness="0" Margin="5">
+                        <Expander.RenderTransform>
+                            <TranslateTransform Y="-50"/>
+                        </Expander.RenderTransform>
+                        <Expander.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.5" Delay="0:0:0.2"/>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.6" Easing="CubicEaseOut" Delay="0:0:0.2"/>
+                            </Transitions>
+                        </Expander.Transitions>
+                        <Expander.Opacity>0</Expander.Opacity>
                         <Grid RowDefinitions="Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0, 0, 0, 0">
                         </Grid>
                     </Expander>
                     <Expander Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" FontSize="16" Header="{I18N {x:Static assets:LangKeys.OtherExpander}}" x:Name="Other" BorderThickness="0" Margin="5">
+                        <Expander.RenderTransform>
+                            <TranslateTransform Y="-50"/>
+                        </Expander.RenderTransform>
+                        <Expander.Transitions>
+                            <Transitions>
+                                <DoubleTransition Property="Opacity" Duration="0:0:0.5" Delay="0:0:0.4"/>
+                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.6" Easing="CubicEaseOut" Delay="0:0:0.4"/>
+                            </Transitions>
+                        </Expander.Transitions>
+                        <Expander.Opacity>0</Expander.Opacity>
                         <StackPanel Orientation="Vertical" Margin="10">
                             <TextBlock Text="{I18N {x:Static assets:LangKeys.Language}}" Margin="0,0,0,5"/>
                             <ComboBox ItemsSource="{Binding OtherSettings.LanguageOptions}" SelectedItem="{Binding OtherSettings.SelectedLanguage}"/>                        
