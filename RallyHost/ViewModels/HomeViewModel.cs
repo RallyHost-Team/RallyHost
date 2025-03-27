@@ -60,9 +60,11 @@ namespace RallyHost.ViewModels
         }
 
         [RelayCommand]
-        public void TogglePopUpProfileEditWindow_Done()
+        public async Task TogglePopUpProfileEditWindow_Done()
         {
             PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
+            _config.Profiles = Profiles.ToList();
+            await _configWriter.SaveConfigAsync(nameof(Config), _config);
         }
         
         [RelayCommand]
@@ -75,8 +77,6 @@ namespace RallyHost.ViewModels
                     Profiles.Remove(SelectedProfile);
                 }
                 PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
-                _config.Profiles = Profiles.ToList();
-                await _configWriter.SaveConfigAsync(nameof(Config), _config);
             }
             else
             {
@@ -96,8 +96,6 @@ namespace RallyHost.ViewModels
             Profiles.Add(profile);
             SelectedProfile = profile;
             PopUpProfileEditWindowIsOpen = !PopUpProfileEditWindowIsOpen;
-            _config.Profiles = Profiles.ToList();
-            await _configWriter.SaveConfigAsync(nameof(Config), _config);
         }
 
         [RelayCommand]
